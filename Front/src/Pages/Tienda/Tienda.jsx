@@ -336,39 +336,7 @@ const [carrito, setCarrito] = useState([]);
         setCarrito([]);
     };
 
-
-  const [carrito, setCarrito] = useState([]);
-
-    // Cargar el carrito desde localStorage al iniciar
-    useEffect(() => {
-        const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
-        setCarrito(carritoGuardado);
-    }, []);
-
-    // Guardar el carrito en localStorage
-    useEffect(() => {
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-    }, [carrito]);
-
-    const agregarAlCarrito = (producto) => {
-      setCarrito((prevCarrito) => {
-          // Verifica si el producto ya existe en el carrito
-          const productoExistente = prevCarrito.find((item) => item.id === producto.id);
-          if (productoExistente) {
-              // Si existe, incrementa la cantidad
-              return prevCarrito.map((item) =>
-                  item.id === producto.id
-                      ? { ...item, cantidad: item.cantidad + 1 }
-                      : item
-              );
-          }
-          // Si no existe, agrega el nuevo producto con cantidad 1
-          return [...prevCarrito, { ...producto, cantidad: 1 }];
-      });
-  };
-
   return (
-<<<<<<< Updated upstream
     <section>
       <div className="w-full pt-10 Store flex flex-col items-center min-h-screen">
         <Navbar />
@@ -396,54 +364,6 @@ const [carrito, setCarrito] = useState([]);
                             onChange={(e) => setSearchBrand(e.target.value)}
                             className="p-2 border border-gray-300 rounded"
                           />
-=======
-   <section>
-     <div className="w-full pt-10 Store flex flex-col items-center min-h-screen px-8">
-      <Navbar />
-      <header className="w-full mt-12">
-        <div className="flex justify-between items-center p-4">
-          <h1 className="text-3xl font-bold"></h1>
-        </div>
-      </header>
-      <div className="flex justify-center items-start w-full flex-1 mt-8">
-        <div className="flex flex-col items-start p-4 mr-4">
-         {/** <button
-            onClick={handleFilter}
-            className={`py-2 px-4 rounded mb-2 ${filterMode === 'filter' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
-          >
-            Filtrar
-          </button>
-          <button
-            onClick={handleSort}
-            className={`py-2 px-4 rounded ${filterMode === 'sort' ? 'bg-green-500 text-white' : 'bg-gray-300 text-black'}`}
-          >
-            Ordenar
-          </button>*/} 
-        </div>
-        <div className="products flex flex-wrap justify-center gap-8 w-full p-4">
-          {products.map((product) => (
-            <div key={product.id} className="product border p-4 rounded shadow-lg text-center">
-              <img 
-               src={`http://localhost:3001/images/${product.foto}`} 
-               alt="Producto" 
-              className="w-64 mx-auto mb-6"               
-              />
-              <Link to={`/detalleproducto/${product.idProducto}`}>
-              <h2 className="text-xl font-semibold mb-2">{product.descripcion}</h2>
-              </Link>
-              <p className="text-lg mb-4">${product.precio.toFixed(2)}</p>
-              <div className="flex justify-between items-center">
-             
-              
-              <Link /*to={`/detalleproducto/${product.idProducto}`}*/>
-                <button 
-                  onClick={() => agregarAlCarrito(product)}
-                  className="bg-custom text-black py-2 px-4 rounded hover:bg-second"
-                >
-                  Agregar al carrito
-                </button>
-              </Link>
->>>>>>> Stashed changes
 
                           {/* Renderizar la lista de marcas como checkboxes */}
                           {displayedBrands.map((brand) => (
