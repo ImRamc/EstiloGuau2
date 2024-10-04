@@ -311,25 +311,25 @@ const [carrito, setCarrito] = useState([]);
     }, [carrito]);
 
     const agregarAlCarrito = (producto) => {
-      setCarrito((prevCarrito) => {
-          const productoExistente = prevCarrito.find((item) => item.idProducto === producto.idProducto);
-  
-          if (productoExistente) {
-              // Si el producto ya existe, aumentar su cantidad
-              return prevCarrito.map((item) =>
-                  item.idProducto === producto.idProducto
-                      ? { ...item, cantidad: item.cantidad + 1 }
-                      : item
-              );
-          } else {
-              // Si no existe, agregarlo con cantidad 1
-              return [...prevCarrito, { ...producto, cantidad: 1 }];
-          }
-      });
-  };
+        setCarrito((prevCarrito) => {
+            const productoExistente = prevCarrito.find((item) => item.idProducto === producto.idProducto);
+
+            if (productoExistente) {
+                // Si el producto ya existe, aumentar su cantidad
+                return prevCarrito.map((item) =>
+                    item.idProducto === producto.idProducto
+                        ? { ...item, cantidad: item.cantidad + 1 }
+                        : item
+                );
+            } else {
+                // Si no existe, agregarlo con cantidad 1
+                return [...prevCarrito, { ...producto, cantidad: 1 }];
+            }
+        });
+    };
 
     const eliminarDelCarrito = (id) => {
-        setCarrito((prevCarrito) => prevCarrito.filter((producto) => producto.id !== id));
+        setCarrito((prevCarrito) => prevCarrito.filter((producto) => producto.idProducto !== id));
     };
 
     const vaciarCarrito = () => {
