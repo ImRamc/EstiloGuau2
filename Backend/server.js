@@ -1,4 +1,5 @@
 const express = require('express');
+const webpush = require("web-push");
 const mysql = require('mysql2');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -17,6 +18,9 @@ dotenv.config(); // Carga las variables de entorno
 const app = express();
 const port = process.env.PORT || 3001;
 
+const publicVapidKey = "BBHornJrxSrn0IGAIMiW7XNgBv5NIwBrx03BW0GaAuNrTh8JWB47PD8K0yKMd6TiYpPdheTt_9ptbkhqsRy__wE";
+const privateVapidKey = "V1DtSaOcrSuW-l7D7YWc1kTYW_-ioGI0iw9qw5jcROc";
+
 
 // Middleware
 app.use(cors());
@@ -26,12 +30,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/payments', paymentsRoutes);
 // Middleware para parsear JSON
 app.use(bodyParser.json());
+app.use(cors({ origin: "http://localhost:5173" }));
 
 // Conexión a la base de datos
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '12345',
+  password: '',
   database: 'bdestiloguau'
 });
 
@@ -1822,6 +1827,41 @@ app.get('/cuponesvigentes/:idUsuario', (req, res) => {
       }
       res.json( results);
   });
+});
+
+
+webpush.setVapidDetails(
+  "mailto:joelcetina19@gmail.com",
+  publicVapidKey,
+  privateVapidKey
+);
+const subscriptions = [];
+
+// Ruta para recibir la suscripción desde el frontend
+app.post("/subscribe", (req, res) => {
+  const subscription = req.body;
+  subscriptions.push(subscription);
+  res.status(201).json({});
+  console.log("Nueva suscripción guardada:", subscription);
+});
+
+// Ruta para enviar notificaciones push
+app.post("/send-notification", (req, res) => {
+  const notificationPayload = {
+    title: "Ya funciona we",
+    message: "Tilin"
+  };
+
+  const promises = subscriptions.map((subscription) =>
+    webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
+  );
+
+  Promise.all(promises)
+    .then(() => res.status(200).json({ message: "Notificación enviada!" }))
+    .catch((error) => {
+      console.error("Error enviando notificación:", error);
+      res.sendStatus(500);
+    });
 });
 
 
