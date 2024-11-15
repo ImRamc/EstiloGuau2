@@ -1864,7 +1864,7 @@ app.post('/registro-vendedor', (req, res) => {
 }); */
 
 app.post('/registro-vendedor', async (req, res) => {
-  const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub } = req.body;
+  const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub, latitud, longitud } = req.body;
 
   console.log(req.body); // Verifica los datos recibidos
 
@@ -1881,8 +1881,8 @@ app.post('/registro-vendedor', async (req, res) => {
     const fechaRegistro = new Date(); // Nueva línea para obtener la fecha actual
 
     // Inserta el vendedor
-    const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro]);
+    const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro, latitud, longitud]);
 
     // Actualiza el idRol del usuario
     const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
