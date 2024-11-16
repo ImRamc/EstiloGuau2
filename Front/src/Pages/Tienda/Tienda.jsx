@@ -7,9 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../../Components/Footer/Footer';
 import { Pagination, Checkbox, Label, Radio, Sidebar, RangeSlider, SidebarCollapse } from "flowbite-react";
 import axios from 'axios';
+import { LocationContext } from '../../Context/LocationContext';
+
 
 function Tienda() {
   const { userData } = useContext(UserContext);
+  const { location, city, country, latitude, longitude } = useContext(LocationContext); // Asegúrate de que latitude y longitude estén disponibles
+  const [tiendasCercanas, setTiendasCercanas] = useState([]);
   //const { agregarAlCarrito } = useContext(CartContext);
   const { idUsuario } = userData;
 
@@ -43,8 +47,8 @@ function Tienda() {
   const [productsPerPage] = useState(16);
 
   // Estados para favoritos y carrito
-  //const [favorites, setFavorites] = useState([]);
-  const [favoritos, setFavoritos] = useState([]);
+const [favorites, setFavorites] = useState([]);
+const [favoritos, setFavoritos] = useState([]);
   //const [agregado, setAgregado] = useState(false);
   /*const [carrito, setCarrito] = useState(() => {
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito'));
@@ -225,6 +229,26 @@ function Tienda() {
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
 };
+
+useEffect(() => {
+  const obtenerTiendasCercanas = async () => {
+    if (location) {
+      try {
+        // Supongamos que tienes un endpoint que acepta latitud y longitud
+        const response = await axios.post("/api/tiendas/cercanas", {
+          latitud: location.latitude,
+          longitud: location.longitude,
+          radio: 5, // Radio en km
+        });
+        setTiendasCercanas(response.data);
+      } catch (error) {
+        console.error("Error al obtener tiendas cercanas:", error);
+      }
+    }
+
+  };
+  obtenerTiendasCercanas();
+}, [location]);
   
   // Variables de paginación y marcas mostradas
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -232,6 +256,8 @@ const handleSearchChange = (e) => {
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const filteredBrands = brands.filter((brand) => brand.toLowerCase().includes(searchBrand.toLowerCase()));
   const displayedBrands = showAllBrands ? filteredBrands : filteredBrands.slice(0, 10);
+
+
 
   return (
     <div className="flex flex-col min-h-screen pt-28">
@@ -292,6 +318,25 @@ const handleSearchChange = (e) => {
                     </div>
 
                   </div>
+                </Sidebar.Item>
+              </Sidebar.Collapse>
+              {/* tienda */}
+              <Sidebar.Collapse label="tienda"  className='shadow-md my-5'>
+                <Sidebar.Item>
+                <div>
+      <h2>Tiendas cercanas</h2>
+      {tiendasCercanas.length > 0 ? (
+        tiendasCercanas.map((tienda) => (
+          <div key={tienda.id}>
+            <h3>{tienda.nombre}</h3>
+            <p>Dirección: {tienda.direccion}</p>
+            <p>Distancia: {tienda.distance.toFixed(2)} km</p>
+          </div>
+        ))
+      ) : (
+        <p>No se encontraron tiendas cercanas.</p>
+      )}
+    </div>
                 </Sidebar.Item>
               </Sidebar.Collapse>
 

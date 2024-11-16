@@ -21,6 +21,8 @@ const LocationProvider = ({ children }) => {
           const result = data.results[0];
           setLocation(result.formatted_address);
           console.log(result.formatted_address);
+          console.log(latitude);
+          console.log(longitude);
           // Extraer componentes adicionales
           const components = result.address_components;
           setCity(components.find(c => c.types.includes("locality"))?.long_name || "Ciudad desconocida");
