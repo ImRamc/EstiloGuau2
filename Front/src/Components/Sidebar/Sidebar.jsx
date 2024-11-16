@@ -97,6 +97,18 @@ const componente = ({ isOpen, toggleSidebar }) => {
                   </Sidebar.Item>
                 </Link>
 
+                <Link to="/DashboardCupones">
+                  <Sidebar.Item icon={HiUser} className='hover:bg-custom'>
+                    TheCupons
+                  </Sidebar.Item>
+                </Link>
+
+                <Link to="/DashboardSuscripcion">
+                  <Sidebar.Item icon={HiUser} className='hover:bg-custom'>
+                    TheSUS
+                  </Sidebar.Item>
+                </Link>
+
               </>
             )}
 
