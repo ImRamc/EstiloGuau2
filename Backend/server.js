@@ -1624,37 +1624,31 @@ app.post('/ofertas-nuevo', async (req, res) => {
 });
 
 
-// Banckend para las suscripciones, crud y compra 
 // Ruta para obtener las suscripciones
 app.get('/suscripciones', async (req, res) => {
-  const query = 'SELECT * FROM suscripcion';
+  const query = 'SELECT * FROM suscripcion'; // Sin filtrar por idRol
 
   try {
     const [results] = await connection.execute(query);
-
     const suscripciones = results.map(suscripcion => {
       let beneficios = [];
-
-      // Verifica si beneficios es un array y asígnalo directamente
       if (Array.isArray(suscripcion.beneficios)) {
         beneficios = suscripcion.beneficios;
       } else if (suscripcion.beneficios) {
-        // Si es un string, intenta parsear
         try {
           beneficios = JSON.parse(suscripcion.beneficios);
         } catch (parseError) {
-          console.error(`Error parsing beneficios for id_sub ${suscripcion.id_sub}:`, parseError);
-          beneficios = []; // Asignar un valor por defecto en caso de error
+          console.error(`Error parsing beneficios:`, parseError);
         }
       }
       return { ...suscripcion, beneficios };
     });
-
     res.json(suscripciones);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Ruta para agregar una nueva suscripción
 app.post('/suscripcion', async (req, res) => {
@@ -1772,11 +1766,11 @@ app.post('/comprar-suscripcion', async (req, res) => {
     if (suscripcionResults.length === 0) {
       return res.status(404).json({ error: 'Suscripción no encontrada' });
     }
-
     const suscripcion = suscripcionResults[0];
 
     // Actualizar el rol del usuario
-    await connection.execute('UPDATE usuario SET idRol = ? WHERE idUsuario = ?', [id_sub, idUsuario]);
+    //await connection.execute('UPDATE usuario SET idRol = ? WHERE idUsuario = ?', [id_sub, idUsuario]);
+    await connection.execute('UPDATE usuario SET idRol = 2 WHERE idUsuario = ?', [idUsuario]);
 
     // Calcular la fecha de fin de la suscripción
     const fechaFin = new Date(Date.now() + suscripcion.duracion_sub * 24 * 60 * 60 * 1000);
@@ -1954,28 +1948,23 @@ app.post('/registro-vendedor', (req, res) => {
   });
 }); */
 
+
 app.post('/registro-vendedor', async (req, res) => {
   const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub } = req.body;
 
   console.log(req.body); // Verifica los datos recibidos
 
   try {
-    // Obtén el idRol asociado a la suscripción
-    const suscripcionQuery = 'SELECT idRol FROM suscripcion WHERE id_sub = ?';
-    const [suscripcionResults] = await connection.execute(suscripcionQuery, [id_sub]);
+    // Asigna siempre el idRol a 2, ya que el rol para los vendedores es fijo
+    const idRol = 2; // Asignamos el idRol como 2 directamente
 
-    if (suscripcionResults.length === 0) {
-      return res.status(400).send('Suscripción no encontrada.');
-    }
-
-    const idRol = suscripcionResults[0].idRol;
     const fechaRegistro = new Date(); // Nueva línea para obtener la fecha actual
 
     // Inserta el vendedor
     const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro]);
 
-    // Actualiza el idRol del usuario
+    // Actualiza el idRol del usuario, siempre como 2
     const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
     await connection.execute(updateQuery, [idRol, idUsuario]);
 
