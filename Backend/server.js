@@ -20,12 +20,13 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
+// Middleware para parsear JSON
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 // Usar el enrutador de pagos
 app.use('/api/payments', paymentsRoutes);
-// Middleware para parsear JSON
-app.use(bodyParser.json());
+
 
 let connection;
 
@@ -35,7 +36,7 @@ async function initializeDBConnection() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '12345',
+      password: '',
       database: 'bdestiloguau'
     });
     console.log('Conexión a la base de datos establecida');
@@ -680,7 +681,7 @@ app.delete('/tallas/:id', async (req, res) => {
 app.get('/all-ofertas', async (req, res) => {
   const query = 'SELECT * FROM ofertas';
   try {
-    const [results] = await connection.execute(query); // Cambiado a execute
+    const [results] = await connection.execute(query);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: error.message }); // Manejo de errores
@@ -880,98 +881,188 @@ app.delete('/productos/:id/foto', async (req, res) => {
   }
 });
 
-//Pedro RECIBOS
-// Obtener todos los recibos
-/*
-app.get('/recibos', (req, res) => {
-  const query = 'SELECT * FROM recibo';
-  connection.query(query, (error, results) => {
-    if (error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      res.json(results);
-    }
-  });
+app.get('/api/cupones', async (req, res) => {
+  try {
+    const [cupones] = await connection.execute(`
+      SELECT
+        c.idCupon,
+        c.cupon,
+        c.descripcion,
+        c.status AS estado,
+        c.fechaRegistro,
+        c.vigencia,
+        v.nom_empresa
+      FROM cupones c
+      JOIN vendedor v ON c.idVendedor = v.idVendedor
+    `);
+    res.json(cupones);
+  } catch (error) {
+    console.error('Error al obtener los cupones:', error);
+    res.status(500).send('Error al obtener los cupones');
+  }
 });
 
-// Obtener un recibo por ID
-app.get('/recibos/:id', (req, res) => {
-  const query = 'SELECT * FROM recibo WHERE idRecibo = ?';
-  connection.query(query, [req.params.id], (error, results) => {
-    if (error) {
-      res.status(500).json({ message: error.message });
-    } else if (results.length === 0) {
-      res.status(404).json({ message: 'Recibo no encontrado' });
-    } else {
-      res.json(results[0]);
-    }
-  });
+
+app.get('/api/cupones/estadisticas', async (req, res) => {
+  try {
+    const [cuponesUsados] = await connection.execute(`
+      SELECT
+        c.idCupon,
+        c.cupon,
+        v.nom_empresa AS vendedor,
+        COUNT(cu.idUsuario) AS cantidad_usos
+      FROM cuponxusuario cu
+      JOIN cupones c ON cu.idCupon = c.idCupon
+      JOIN vendedor v ON c.idVendedor = v.idVendedor
+      WHERE cu.Usado = 1
+      GROUP BY c.idCupon, v.nom_empresa
+    `);
+    res.json(cuponesUsados);
+  } catch (error) {
+    console.error('Error al obtener estadísticas de cupones usados:', error);
+    res.status(500).send('Error al obtener estadísticas de cupones usados');
+  }
 });
 
-// Crear un nuevo recibo
-app.post('/recibo-nuevo', (req, res) => {
-  const { idUsuario } = req.body;
-  const query = 'INSERT INTO recibo (idUsuario) VALUES (?)';
-  connection.query(query, [idUsuario], (error, results) => {
-    if (error) {
-      res.status(400).json({ message: error.message });
-    } else {
-      res.status(201).json({ id: results.insertId, idUsuario });
-    }
-  });
+app.get('/api/dashboard/cupones', async (req, res) => {
+  try {
+    const [cuponesPorMes] = await connection.execute(`
+      SELECT
+        YEAR(cu.fechaUso) AS anio,
+        MONTH(cu.fechaUso) AS mes,
+        v.nom_empresa AS vendedor,
+        COUNT(cu.idCupon) AS cupones_usados
+      FROM cuponxusuario cu
+      JOIN cupones c ON cu.idCupon = c.idCupon
+      JOIN vendedor v ON c.idVendedor = v.idVendedor
+      WHERE cu.Usado = 1
+      GROUP BY YEAR(cu.fechaUso), MONTH(cu.fechaUso), v.nom_empresa
+      ORDER BY anio DESC, mes DESC
+    `);
+    res.json(cuponesPorMes);
+  } catch (error) {
+    console.error('Error al obtener los cupones por mes:', error);
+    res.status(500).send('Error al obtener los cupones por mes');
+  }
 });
 
-// Actualizar un recibo
-app.put('/recibos/:id', (req, res) => {
-  const { idUsuario } = req.body;
-  const query = 'UPDATE recibo SET idUsuario = ? WHERE idRecibo = ?';
-  connection.query(query, [idUsuario, req.params.id], (error, results) => {
-    if (error) {
-      res.status(400).json({ message: error.message });
-    } else if (results.affectedRows === 0) {
-      res.status(404).json({ message: 'Recibo no encontrado' });
-    } else {
-      res.json({ id: req.params.id, idUsuario });
-    }
-  });
+// Endpoint para obtener cupones usados por vendedor
+app.get('/api/dashboard/cupones-vendedor', async (req, res) => {
+  try {
+    const [cuponesPorVendedor] = await connection.execute(`
+      SELECT
+        v.nom_empresa AS vendedor,
+        COUNT(cu.idCupon) AS cupones_usados
+      FROM cuponxusuario cu
+      JOIN cupones c ON cu.idCupon = c.idCupon
+      JOIN vendedor v ON c.idVendedor = v.idVendedor
+      WHERE cu.Usado = 1
+      GROUP BY v.nom_empresa
+    `);
+    res.json(cuponesPorVendedor);
+  } catch (error) {
+    console.error('Error al obtener los cupones por vendedor:', error);
+    res.status(500).send('Error al obtener los cupones por vendedor');
+  }
 });
 
-// Eliminar un recibo
-app.delete('/recibos/:id', (req, res) => {
-  const query = 'DELETE FROM recibo WHERE idRecibo = ?';
-  connection.query(query, [req.params.id], (error, results) => {
-    if (error) {
-      res.status(500).json({ message: error.message });
-    } else if (results.affectedRows === 0) {
-      res.status(404).json({ message: 'Recibo no encontrado' });
-    } else {
-      res.json({ message: 'Recibo eliminado' });
-    }
-  });
-});
-*/
 
-//Publicidad
-/*
-app.get('/no-comprado/:idUsuario', (req, res) => {
-  const { idUsuario } = req.params;
-  const query = `
-SELECT p.*
-FROM producto p
-LEFT JOIN compra c ON p.idProducto = c.idProducto AND c.idUsuario = ?
-WHERE c.idProducto IS NULL
-LIMIT 6;
 
-  `;
-  connection.query(query, [idUsuario], (error, results) => {
-    if (error) {
-      res.status(500).json({ message: error.message });
-    } else {
-      res.json(results);
-    }
-  });
+
+
+app.get('/api/suscripciones', async (req, res) => {
+  try {
+    const queryTotal = `SELECT COUNT(*) AS total_suscripciones FROM suscripcion`;
+    const [resultTotal] = await connection.query(queryTotal);
+
+    res.json(resultTotal[0]);
+  } catch (error) {
+    console.error('Error al obtener las suscripciones:', error);
+    res.status(500).json({ error: 'Error al obtener las suscripciones' });
+  }
 });
-*/
+
+app.get('/api/suscripciones/por-tipo', async (req, res) => {
+  try {
+    const queryTipo = `SELECT nombre_sub, COUNT(id_sub) AS cantidad_usuarios
+                       FROM suscripcion
+                       GROUP BY nombre_sub`;
+    const [resultTipo] = await connection.query(queryTipo);
+
+    res.json(resultTipo); 
+  } catch (error) {
+    console.error('Error al obtener suscripciones por tipo:', error);
+    res.status(500).json({ error: 'Error al obtener suscripciones por tipo' });
+  }
+});
+
+app.get('/api/suscripciones/por-mes', async (req, res) => {
+  try {
+    const queryMes = `SELECT DATE_FORMAT(v.fecha_registro, '%Y-%m') AS mes, COUNT(s.id_sub) AS cantidad
+                      FROM vendedor v
+                      JOIN suscripcion s ON v.id_sub = s.id_sub
+                      GROUP BY mes
+                      ORDER BY mes DESC`;
+    const [resultMes] = await connection.query(queryMes);
+
+    res.json(resultMes);
+  } catch (error) {
+    console.error('Error al obtener suscripciones por mes:', error);
+    res.status(500).json({ error: 'Error al obtener suscripciones por mes' });
+  }
+});
+
+
+app.get('/api/suscripciones/por-vendedor', async (req, res) => {
+  try {
+    const queryVendedor = `
+      SELECT v.nom_empresa, s.nombre_sub, COUNT(v.idSuscripcion) AS cantidad
+      FROM vendedor v
+      JOIN suscripcion s ON v.id_sub = s.id_sub
+      GROUP BY v.idVendedor, s.id_sub
+    `;
+    const [resultVendedor] = await connection.query(queryVendedor);
+
+    res.json(resultVendedor); // Devuelve el resultado como un array
+  } catch (error) {
+    console.error('Error al obtener suscripciones por vendedor:', error);
+    res.status(500).json({ error: 'Error al obtener suscripciones por vendedor' });
+  }
+});
+
+app.get('/api/suscripciones/total-empresas', async (req, res) => {
+  try {
+    const result = await connection.query(`
+      SELECT COUNT(DISTINCT idVendedor) AS total_empresas
+      FROM suscripcion
+      JOIN vendedor ON suscripcion.id_sub = vendedor.id_sub
+    `);
+    
+    res.json({ total_empresas: result[0][0].total_empresas });
+  } catch (error) {
+    console.error('Error al obtener total de empresas:', error);
+    res.status(500).send('Error al obtener total de empresas');
+  }
+});
+
+app.get('/api/suscripciones/empresas-por-tipo', async (req, res) => {
+  try {
+    const result = await connection.query(`
+      SELECT s.id_sub, s.nombre_sub, COUNT(DISTINCT v.idVendedor) AS cantidad_empresas
+      FROM suscripcion s
+      JOIN vendedor v ON s.id_sub = v.id_sub
+      GROUP BY s.id_sub
+    `);
+
+    const data = result[0];  // Aquí tomamos solo el primer array (el de los resultados)
+    /* console.log('Datos que se enviarán:', data); // Verifica los datos que se enviarán */
+    res.json(data);
+  } catch (error) {
+    console.error('Error al obtener empresas por tipo de suscripción:', error);
+    res.status(500).send('Error al obtener empresas por tipo de suscripción');
+  }
+});
+
 
 //Dashboard
 //Ventas mensuales
@@ -1533,37 +1624,31 @@ app.post('/ofertas-nuevo', async (req, res) => {
 });
 
 
-// Banckend para las suscripciones, crud y compra 
 // Ruta para obtener las suscripciones
 app.get('/suscripciones', async (req, res) => {
-  const query = 'SELECT * FROM suscripcion';
+  const query = 'SELECT * FROM suscripcion'; // Sin filtrar por idRol
 
   try {
     const [results] = await connection.execute(query);
-
     const suscripciones = results.map(suscripcion => {
       let beneficios = [];
-
-      // Verifica si beneficios es un array y asígnalo directamente
       if (Array.isArray(suscripcion.beneficios)) {
         beneficios = suscripcion.beneficios;
       } else if (suscripcion.beneficios) {
-        // Si es un string, intenta parsear
         try {
           beneficios = JSON.parse(suscripcion.beneficios);
         } catch (parseError) {
-          console.error(`Error parsing beneficios for id_sub ${suscripcion.id_sub}:`, parseError);
-          beneficios = []; // Asignar un valor por defecto en caso de error
+          console.error(`Error parsing beneficios:`, parseError);
         }
       }
       return { ...suscripcion, beneficios };
     });
-
     res.json(suscripciones);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 // Ruta para agregar una nueva suscripción
 app.post('/suscripcion', async (req, res) => {
@@ -1681,11 +1766,11 @@ app.post('/comprar-suscripcion', async (req, res) => {
     if (suscripcionResults.length === 0) {
       return res.status(404).json({ error: 'Suscripción no encontrada' });
     }
-
     const suscripcion = suscripcionResults[0];
 
     // Actualizar el rol del usuario
-    await connection.execute('UPDATE usuario SET idRol = ? WHERE idUsuario = ?', [id_sub, idUsuario]);
+    //await connection.execute('UPDATE usuario SET idRol = ? WHERE idUsuario = ?', [id_sub, idUsuario]);
+    await connection.execute('UPDATE usuario SET idRol = 2 WHERE idUsuario = ?', [idUsuario]);
 
     // Calcular la fecha de fin de la suscripción
     const fechaFin = new Date(Date.now() + suscripcion.duracion_sub * 24 * 60 * 60 * 1000);
@@ -1706,7 +1791,7 @@ app.post('/comprar-suscripcion', async (req, res) => {
 // Ruta para obtener las temporadas
 app.get('/temporada', async (req, res) => {
   try {
-    const [results] = await connection.execute('SELECT * FROM temporada'); // Cambiado a execute
+    const [results] = await connection.execute('SELECT * FROM temporada');
     res.json(results);
   } catch (err) {
     res.status(500).json({ error: err.message }); // Manejo de errores
@@ -1717,7 +1802,7 @@ app.get('/temporada', async (req, res) => {
 app.get('/usuariogetidrol', async (req, res) => { // Agregando async aquí
   const query = 'SELECT * FROM usuario WHERE idRol = 3';
   try {
-    const [results] = await connection.execute(query); // Cambiado a execute
+    const [results] = await connection.execute(query);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los usuarios', error: error.message }); // Manejo de errores
@@ -1863,28 +1948,23 @@ app.post('/registro-vendedor', (req, res) => {
   });
 }); */
 
+
 app.post('/registro-vendedor', async (req, res) => {
   const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub } = req.body;
 
   console.log(req.body); // Verifica los datos recibidos
 
   try {
-    // Obtén el idRol asociado a la suscripción
-    const suscripcionQuery = 'SELECT idRol FROM suscripcion WHERE id_sub = ?';
-    const [suscripcionResults] = await connection.execute(suscripcionQuery, [id_sub]);
+    // Asigna siempre el idRol a 2, ya que el rol para los vendedores es fijo
+    const idRol = 2; // Asignamos el idRol como 2 directamente
 
-    if (suscripcionResults.length === 0) {
-      return res.status(400).send('Suscripción no encontrada.');
-    }
-
-    const idRol = suscripcionResults[0].idRol;
     const fechaRegistro = new Date(); // Nueva línea para obtener la fecha actual
 
     // Inserta el vendedor
     const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro]);
 
-    // Actualiza el idRol del usuario
+    // Actualiza el idRol del usuario, siempre como 2
     const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
     await connection.execute(updateQuery, [idRol, idUsuario]);
 

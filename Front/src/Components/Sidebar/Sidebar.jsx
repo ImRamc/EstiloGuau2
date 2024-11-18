@@ -97,6 +97,24 @@ const componente = ({ isOpen, toggleSidebar }) => {
                   </Sidebar.Item>
                 </Link>
 
+                <Link to="/DashboardCupones">
+                  <Sidebar.Item icon={HiUser} className='hover:bg-custom'>
+                    CuponDashboard
+                  </Sidebar.Item>
+                </Link>
+
+                <Link to="/DashboardSuscripcion">
+                  <Sidebar.Item icon={HiUser} className='hover:bg-custom'>
+                    SubsDashboard
+                  </Sidebar.Item>
+                </Link>
+
+                <Link to="/SupersetData">
+                  <Sidebar.Item icon={HiUser} className='hover:bg-custom'>
+                    Superset
+                  </Sidebar.Item>
+                </Link>
+
               </>
             )}
 

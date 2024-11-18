@@ -33,7 +33,7 @@ const Suscripcion = () => {
   const manejarSuscripcion = async (suscripcion) => {
     if (!idUsuario) {
     
-     // alert('Debes estar logueado para suscribirte.');
+      alert('Debes estar logueado para suscribirte.');
       return;
     }
     
