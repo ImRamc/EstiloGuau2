@@ -37,6 +37,7 @@ import EditarVendedor from '../Pages/Vendedor/EditarVendedor';
 import Uscupones from '../Pages/Uscupones/Uscupones';
 import DashboardCupones from '../Pages/DashboardCupones/DashboardCupones';
 import DashboardSuscripcion from '../Pages/DashboardSuscripcion/DashboardSuscripcion';
+import SupersetData from '../Pages/DashboardSuperset/SupersetData';
 //#endregion
 
 const RoutesComponent = () => {
@@ -99,6 +100,17 @@ const RoutesComponent = () => {
           element={
             idRol && (idRol === 3) ? (
               <DashboardSuscripcion />
+            ) : (
+              <Navigate to="/Login" />
+            )
+          }
+        />
+
+        <Route
+          path="/SupersetData"
+          element={
+            idRol && (idRol === 3) ? (
+              <SupersetData />
             ) : (
               <Navigate to="/Login" />
             )
