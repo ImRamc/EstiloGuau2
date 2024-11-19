@@ -35,7 +35,9 @@ import ProtectedRoute from "../Components/ProtectedRoute";
 import ProductoUser from '../Pages/Compras/productoUser';
 import EditarVendedor from '../Pages/Vendedor/EditarVendedor';
 import Uscupones from '../Pages/Uscupones/Uscupones';
-
+import DashboardCupones from '../Pages/DashboardCupones/DashboardCupones';
+import DashboardSuscripcion from '../Pages/DashboardSuscripcion/DashboardSuscripcion';
+import SupersetData from '../Pages/DashboardSuperset/SupersetData';
 //#endregion
 
 const RoutesComponent = () => {
@@ -81,6 +83,41 @@ const RoutesComponent = () => {
             )
           }
         />
+
+        <Route
+          path="/DashboardCupones"
+          element={
+            idRol && (idRol === 3) ? (
+              <DashboardCupones />
+            ) : (
+              <Navigate to="/Login" />
+            )
+          }
+        />
+
+        <Route
+          path="/DashboardSuscripcion"
+          element={
+            idRol && (idRol === 3) ? (
+              <DashboardSuscripcion />
+            ) : (
+              <Navigate to="/Login" />
+            )
+          }
+        />
+
+        <Route
+          path="/SupersetData"
+          element={
+            idRol && (idRol === 3) ? (
+              <SupersetData />
+            ) : (
+              <Navigate to="/Login" />
+            )
+          }
+        />
+
+
         <Route
           path="/Productos"
           element={
