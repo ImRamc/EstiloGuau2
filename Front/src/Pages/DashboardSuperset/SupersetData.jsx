@@ -13,7 +13,7 @@ const SupersetData = () => {
     const fetchData = async () => {
       try {
         // Aquí generamos la URL del dashboard de Superset (Asegúrate de actualizar el ID del dashboard)
-        const dashboardUrl = "http://localhost:8088/superset/dashboard/14/";
+        const dashboardUrl = "http://localhost:8088/superset/dashboard/13/";
         setIframeSrc(dashboardUrl); // Establecemos el iframe con la URL de Superset
 
         setLoading(false);

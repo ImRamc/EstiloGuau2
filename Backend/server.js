@@ -11,9 +11,6 @@ const moment = require('moment');
 const bodyParser = require('body-parser');
 const router = express.Router();
 
-
-const paymentsRoutes = require('./routes/payments');
-
 dotenv.config(); // Carga las variables de entorno
 
 const app = express();
@@ -30,7 +27,6 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 // Usar el enrutador de pagos
-app.use('/api/payments', paymentsRoutes);
 // Middleware para parsear JSON
 app.use(bodyParser.json());
 app.use(cors({ origin: "http://localhost:5173" }));
@@ -43,7 +39,7 @@ async function initializeDBConnection() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '',
+      password: '12345',
       database: 'bdestiloguau'
     });
     console.log('Conexión a la base de datos establecida');
@@ -75,6 +71,35 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+//#endregion
+
+//#region
+const Openpay = require('openpay');
+const openpay = new Openpay('mqmfdl22jfymjamikdso', 'sk_68df529a6f384ba2b2fee0c9dd33f894', false); // Cambia false a true si estás en sandbox
+
+app.post('/api/process-payment', (req, res) => {
+  const { token_id, device_session_id, amount, description } = req.body;
+
+  const chargeRequest = {
+    source_id: token_id,
+    method: 'card',
+    amount: 799,
+    currency: 'MXN',
+    description: 'esto es una descripcion',
+    device_session_id: device_session_id,
+  };
+
+  openpay.charges.create(chargeRequest, (error, charge) => {
+    if (error) {
+      console.error("Error al procesar el cargo:", error);
+      res.status(500).send({ error: 'Hubo un problema al procesar el pago.' });
+    } else {
+      console.log("Cargo procesado:", charge);
+      res.send(charge);
+    }
+  });
+});
+
 //#endregion
 
 // Rutas
