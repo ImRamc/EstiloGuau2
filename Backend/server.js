@@ -1,6 +1,7 @@
 //#region Conexiòn
 const express = require('express');
 const mysql = require('mysql2/promise');
+const webpush = require("web-push");
 const cors = require('cors');
 const dotenv = require('dotenv');
 const multer = require('multer');
@@ -18,6 +19,10 @@ dotenv.config(); // Carga las variables de entorno
 const app = express();
 const port = process.env.PORT || 3001;
 
+const publicVapidKey = "BBHornJrxSrn0IGAIMiW7XNgBv5NIwBrx03BW0GaAuNrTh8JWB47PD8K0yKMd6TiYpPdheTt_9ptbkhqsRy__wE";
+const privateVapidKey = "V1DtSaOcrSuW-l7D7YWc1kTYW_-ioGI0iw9qw5jcROc";
+
+
 // Middleware
 app.use(cors());
 // Middleware para parsear JSON
@@ -26,7 +31,9 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 // Usar el enrutador de pagos
 app.use('/api/payments', paymentsRoutes);
-
+// Middleware para parsear JSON
+app.use(bodyParser.json());
+app.use(cors({ origin: "http://localhost:5173" }));
 
 let connection;
 
@@ -46,7 +53,6 @@ async function initializeDBConnection() {
   }
 }
 initializeDBConnection();
-
 
 // Configuración de Multer
 const storage = multer.diskStorage({
@@ -1950,7 +1956,7 @@ app.post('/registro-vendedor', (req, res) => {
 
 
 app.post('/registro-vendedor', async (req, res) => {
-  const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub } = req.body;
+  const { nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, id_sub, latitud, longitud } = req.body;
 
   console.log(req.body); // Verifica los datos recibidos
 
@@ -1961,8 +1967,8 @@ app.post('/registro-vendedor', async (req, res) => {
     const fechaRegistro = new Date(); // Nueva línea para obtener la fecha actual
 
     // Inserta el vendedor
-    const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro]);
+    const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro, latitud, longitud]);
 
     // Actualiza el idRol del usuario, siempre como 2
     const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
@@ -2309,6 +2315,41 @@ app.get('/total-clientes/:idVendedor', async (req, res) => {
 });
 
 //#endregion
+
+
+webpush.setVapidDetails(
+  "mailto:joelcetina19@gmail.com",
+  publicVapidKey,
+  privateVapidKey
+);
+const subscriptions = [];
+
+// Ruta para recibir la suscripción desde el frontend
+app.post("/subscribe", (req, res) => {
+  const subscription = req.body;
+  subscriptions.push(subscription);
+  res.status(201).json({});
+  console.log("Nueva suscripción guardada:", subscription);
+});
+
+// Ruta para enviar notificaciones push
+app.post("/send-notification", (req, res) => {
+  const notificationPayload = {
+    title: "Ya funciona we",
+    message: "Tilin"
+  };
+
+  const promises = subscriptions.map((subscription) =>
+    webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
+  );
+
+  Promise.all(promises)
+    .then(() => res.status(200).json({ message: "Notificación enviada!" }))
+    .catch((error) => {
+      console.error("Error enviando notificación:", error);
+      res.sendStatus(500);
+    });
+});
 
 
 app.listen(3001, () => {

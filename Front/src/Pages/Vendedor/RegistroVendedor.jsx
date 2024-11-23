@@ -4,24 +4,46 @@ import { UserContext } from '../../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../Components/Navbar/Navbar';
 import Footer from '../../Components/Footer/Footer';
-import { LocationContext  } from '../../Context/LocationContext';
-
+import { LocationContext } from '../../Context/LocationContext';
 
 const RegistroVendedor = () => {
-  const { location, city, country } = useContext(LocationContext);
+  const { location, city, country, latitude, longitude } = useContext(LocationContext); // Asegúrate de que latitude y longitude estén disponibles
   const { userData } = useContext(UserContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nom_empresa: '',
-    direccion: location,
+    direccion: location || 'Dirección no disponible',  // Valor predeterminado
     telefono: '',
-    pais: country,
-    estado: city,
+    pais: country || 'País no disponible',           // Valor predeterminado
+    estado: city || 'Estado no disponible',           // Valor predeterminado
     codigo_postal: '',
     rfc: '',
   });
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  const [latitud, setLatitud] = useState(null);
+  const [longitud, setLongitud] = useState(null);
+
+
+
+  useEffect(() => {
+    // Obtener la ubicación del usuario cuando el componente se monta
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitud(position.coords.latitude);
+          setLongitud(position.coords.longitude);
+        },
+        (error) => {
+          console.error('Error al obtener la geolocalización:', error);
+          setError('No se pudo obtener la geolocalización');
+        }
+      );
+    } else {
+      setError('La geolocalización no es compatible con este navegador.');
+    }
+  })
 
   useEffect(() => {
     const verificarEmpresa = async () => {
@@ -52,6 +74,11 @@ const RegistroVendedor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!latitud || !longitud) {
+      setError('Latitud y longitud no disponibles');
+      return;
+    }
+
     try {
       // Obtener ID de suscripción desde los parámetros de la URL
       const queryParams = new URLSearchParams(window.location.search);
@@ -67,6 +94,8 @@ const RegistroVendedor = () => {
       // Registrar vendedor
       await axios.post('http://localhost:3001/registro-vendedor', {
         ...formData,
+        latitud,
+        longitud,
         idUsuario: userData.idUsuario,
         idRol,
         id_sub: subscriptionId, // Usar el ID de la suscripción de la URL
@@ -93,10 +122,10 @@ const RegistroVendedor = () => {
           
           <div className="flex flex-col space-y-4">
             <input type="text" name="nom_empresa" placeholder="Nombre de la empresa" onChange={handleChange} required />
-            <input type="text" name="direccion" placeholder="Dirección" onChange={handleChange} required />
+            <input type="text" name="direccion" placeholder="Dirección" value={location} onChange={handleChange} required />
             <input type="text" name="telefono" placeholder="Teléfono" onChange={handleChange} required />
-            <input type="text" name="pais" placeholder="País" onChange={handleChange} required />
-            <input type="text" name="estado" placeholder="Estado" onChange={handleChange} required />
+            <input type="text" name="pais" placeholder="País" value={country} onChange={handleChange} required />
+            <input type="text" name="estado" placeholder="Estado" value={city} onChange={handleChange} required />
             <input type="text" name="codigo_postal" placeholder="Código Postal" onChange={handleChange} required />
             <input type="text" name="rfc" placeholder="RFC" onChange={handleChange} required />
           </div>
@@ -107,7 +136,6 @@ const RegistroVendedor = () => {
       <div>
          <Footer />
       </div>
-     
     </div>
   );
 };
