@@ -23,40 +23,45 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
-  const agregarAlCarrito = (producto, talla,  cantidad, precioSeleccionado,precioOriginal, productosOferta ) => {
-    const nuevaCantidad = Number(producto.cantidad ?? 0) + 1;
-   
-  
+  const agregarAlCarrito = (producto, talla, cantidad = 1, precioSeleccionado, precioOriginal, productosOferta) => {
     setCarrito((prevCarrito) => {
-      
       const productoExistente = prevCarrito.find(
-        (item) => item.idProducto === producto.idProducto && item.talla === talla && item.precioSeleccionado === precioSeleccionado && item.precioOriginal === precioOriginal&& item.productosOferta === productosOferta
+        (item) => item.idProducto === producto.idProducto && item.talla === talla
       );
-      
-
+  
       if (productoExistente) {
         // Si el producto ya existe, aumentar su cantidad
         return prevCarrito.map((item) =>
           item.idProducto === producto.idProducto && item.talla === talla
-        ? { ...item, cantidad: item.cantidad + 1 }
-        : item
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
         );
       } else {
-        toast.success('Producto agregado al carrito!',{
-           position: "top-center",
-           autoClose: 900, // Tiempo que permanece visible (ms)
-           hideProgressBar: true,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-        })    
-        // Si no existe, agregarlo con cantidad 1
-        return [...prevCarrito, { ...producto, talla: talla, cantidad: cantidad, precioSeleccionado : precioSeleccionado, precioOriginal : precioOriginal, productosOferta : productosOferta }];
+        // Si no existe, agregarlo con cantidad inicial
+        toast.success("Producto agregado al carrito!", {
+          position: "top-center",
+          autoClose: 900,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return [
+          ...prevCarrito,
+          {
+            ...producto,
+            talla,
+            cantidad: Number(cantidad || 1),
+            precioSeleccionado,
+            precioOriginal,
+            productosOferta,
+          },
+        ];
       }
-      
     });
   };
+  
 
   const eliminarDelCarrito = (idProducto, talla) => {
     setCarrito((prevCarrito) => prevCarrito.filter((producto) => producto.idProducto !== idProducto  || producto.talla !== talla ));

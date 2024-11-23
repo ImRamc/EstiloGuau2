@@ -5,12 +5,13 @@ import imgcvv from "../../img/Payments/cvv.png";
 import openpay from "../../img/Payments/openpay.png";
 import security from "../../img/Payments/security.png";
 
-const PaymentForm = () => {
+const PaymentForm = ({total}) => {
   const [cardHolderName, setCardHolderName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
   const [expiryYear, setExpiryYear] = useState("");
   const [cvv, setCvv] = useState("");
+  const [errors, setErrors] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -42,12 +43,12 @@ const PaymentForm = () => {
   };
   
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
-    const apiUrl = "http://localhost:3000/api/process-payment";
-  
+    const apiUrl = "http://localhost:3001/api/process-payment";
+  console.log("esto es el token antes de mandarlo al back", tokenId)
     const paymentData = {
       token_id: tokenId, // Token de Openpay
       device_session_id: deviceSessionId, // ID de sesión del dispositivo
-      amount: 100.00, // Cambia este valor según el monto de tu pago
+      amount: total, // Cambia este valor según el monto de tu pago
       description: "Pago de ejemplo", // Descripción del pago
     };
   
@@ -65,121 +66,206 @@ const PaymentForm = () => {
         return response.json();
       })
       .then((data) => {
+        console.log('Datos enviados al servidor:', paymentData);
         console.log("Pago procesado con éxito:", data);
         alert("¡Pago realizado con éxito!");
       })
       .catch((error) => {
+        console.log('Datos enviados al servidor:', paymentData);
         console.error("Error al procesar el pago:", error);
         setError("Hubo un problema al procesar el pago. Inténtalo de nuevo.");
       });
   };
+  const validateCardHolderName = (value) => {
+    if (!value.trim()) return "El nombre del titular es requerido.";
+    if (!/^[a-zA-Z\s]+$/.test(value)) return "El nombre solo puede contener letras y espacios.";
+    if (value.length > 30) return "El nombre no puede exceder 30 caracteres.";
+    return "";
+  };
+
+  const validateCardNumber = (value) => {
+    if (!value.trim()) return "El número de tarjeta es requerido.";
+    if (!/^\d{16}$/.test(value)) return "El número de tarjeta debe contener 16 dígitos.";
+    return "";
+  };
+
+  const validateExpiryMonth = (value) => {
+    if (!value.trim()) return "El mes de expiración es requerido.";
+    if (!/^(0[1-9]|1[0-2])$/.test(value)) return "Ingrese un mes válido (01-12).";
+    return "";
+  };
+
+  const validateExpiryYear = (value) => {
+    if (!value.trim()) return "El año de expiración es requerido.";
+    if (!/^\d{2}$/.test(value)) return "Ingrese un año válido (dos dígitos).";
+    const currentYear = new Date().getFullYear() % 100; // Últimos dos dígitos del año actual
+    if (parseInt(value, 10) < currentYear) return "El año de expiración no puede ser en el pasado.";
+    return "";
+  };
+
+  const validateCvv = (value) => {
+    if (!value.trim()) return "El CVV es requerido.";
+    if (!/^\d{3,4}$/.test(value)) return "El CVV debe contener entre 3 y 4 dígitos.";
+    return "";
+  };
+
+  const handleValidation = (field, value) => {
+    let error = "";
+    switch (field) {
+      case "cardHolderName":
+        error = validateCardHolderName(value);
+        break;
+      case "cardNumber":
+        error = validateCardNumber(value);
+        break;
+      case "expiryMonth":
+        error = validateExpiryMonth(value);
+        break;
+      case "expiryYear":
+        error = validateExpiryYear(value);
+        break;
+      case "cvv":
+        error = validateCvv(value);
+        break;
+      default:
+        break;
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+  };
+
+
 
   return (
-    <div className="w-full max-w-4xl p-6 bg-white shadow-md rounded-lg mx-auto">
-      <form action="#" method="POST" id="payment-form" onSubmit={handlePayment}>
-        {/* Información y tokens ocultos para Openpay */}
-        <input type="hidden" name="token_id" id="token_id" />
+    <div>
+       <form action="#" method="POST" id="payment-form" onSubmit={handlePayment}>
+         {/* Información y tokens ocultos para Openpay */}
+         <input type="hidden" name="token_id" id="token_id" />
         <input type="hidden" name="use_card_points" id="use_card_points" value="false" />
-
-        {/* Logos de tarjetas */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex flex-col w-1/2">
-            <h2 className="text-xl font-semibold mb-2">Tarjeta de crédito</h2>
+        <div className="flex ">
+        <div className="flex flex-col w-1/2">
+            <h2 className="text-xl font-semibold mb-2">Tarjeta de crédito </h2>
             <img src={card1} alt="Tarjetas de crédito" />
           </div>
-          <div className="border-l border-gray-300 h-24 mx-4"></div>
-          <div className="flex flex-col w-1/2">
+          <div className="flex flex-col w-1/2 ">
             <h2 className="text-xl font-semibold mb-2">Tarjeta de débito</h2>
-            <img src={cards2} alt="Tarjetas de débito" />
+            <img src={cards2} alt="Tarjetas de débito items-center" />
           </div>
         </div>
+    <div className="mb-4">
+      <label className="block text-gray-700">Nombre del titular</label>
+      <input
+        type="text"
+        className={`mt-1 p-2 w-full border ${
+          errors.cardHolderName ? "border-red-500" : "border-gray-300"
+        } rounded-md`}
+        placeholder="Como aparece en la tarjeta"
+        value={cardHolderName}
+        onChange={(e) => {
+          setCardHolderName(e.target.value);
+          handleValidation("cardHolderName", e.target.value);
+        }}
+        maxLength="30" // Longitud máxima del nombre
+        data-openpay-card="holder_name"
+      />
+      {errors.cardHolderName && <p className="text-red-500 text-sm">{errors.cardHolderName}</p>}
+    </div>
 
-        {/* Campos del formulario */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Nombre del titular</label>
-          <input
-            type="text"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            placeholder="Como aparece en la tarjeta"
-            value={cardHolderName}
-            onChange={(e) => setCardHolderName(e.target.value)}
-            data-openpay-card="holder_name"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Número de tarjeta</label>
-          <input
-            type="text"
-            className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-            placeholder="Número de tarjeta"
-            value={cardNumber}
-            onChange={(e) => setCardNumber(e.target.value)}
-            data-openpay-card="card_number"
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <label className="block text-gray-700">Mes</label>
-            <input
-              type="text"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-              placeholder="MM"
-              value={expiryMonth}
-              onChange={(e) => setExpiryMonth(e.target.value)}
-              data-openpay-card="expiration_month"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Año</label>
-            <input
-              type="text"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-              placeholder="AA"
-              value={expiryYear}
-              onChange={(e) => setExpiryYear(e.target.value)}
-              data-openpay-card="expiration_year"
-            />
-          </div>
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700">Código de seguridad (CVV)</label>
-          <div className="relative">
-            <input
-              type="text"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-              placeholder="3 dígitos"
-              value={cvv}
-              onChange={(e) => setCvv(e.target.value)}
-              data-openpay-card="cvv2"
-            />
-            <img src={imgcvv} alt="CVV" className="absolute right-3 top-3 h-6" />
-          </div>
-        </div>
+    <div className="mb-4">
+      <label className="block text-gray-700">Número de tarjeta</label>
+      <input
+        type="text"
+        className={`mt-1 p-2 w-full border ${
+          errors.cardNumber ? "border-red-500" : "border-gray-300"
+        } rounded-md`}
+        placeholder="Número de tarjeta"
+        value={cardNumber}
+        onChange={(e) => {
+          setCardNumber(e.target.value.replace(/\D/g, "")); // Solo números
+          handleValidation("cardNumber", e.target.value);
+        }}
+        maxLength="16" // Longitud exacta de 16 dígitos
+        inputMode="numeric" // Entrada en modo numérico
+        data-openpay-card="card_number"
+      />
+      {errors.cardNumber && <p className="text-red-500 text-sm">{errors.cardNumber}</p>}
+    </div>
 
-        {/* Información de seguridad */}
-        <div className="text-sm text-gray-600 mb-4">
-          <div className="flex items-center mb-1">
-            <img src={openpay} alt="Openpay" className="h-6 mr-2" />
-            Transacciones realizadas vía: <strong>Openpay</strong>
-          </div>
-          <div className="flex items-center">
-            <img src={security} alt="Security" className="h-6 mr-2" />
-            Tus pagos se realizan de forma segura con encriptación de 256 bits.
-          </div>
-        </div>
+    <div className="grid grid-cols-2 gap-4 mb-4">
+      <div>
+        <label className="block text-gray-700">Mes</label>
+        <input
+          type="text"
+          className={`mt-1 p-2 w-full border ${
+            errors.expiryMonth ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="MM"
+          value={expiryMonth}
+          onChange={(e) => {
+            setExpiryMonth(e.target.value.replace(/\D/g, "")); // Solo números
+            handleValidation("expiryMonth", e.target.value);
+          }}
+          maxLength="2" // Longitud exacta de 2 dígitos
+          inputMode="numeric"
+          data-openpay-card="expiration_month"
+        />
+        {errors.expiryMonth && <p className="text-red-500 text-sm">{errors.expiryMonth}</p>}
+      </div>
 
-        {/* Botón de pago */}
-        <button
+      <div>
+        <label className="block text-gray-700">Año</label>
+        <input
+          type="text"
+          className={`mt-1 p-2 w-full border ${
+            errors.expiryYear ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="AA"
+          value={expiryYear}
+          onChange={(e) => {
+            setExpiryYear(e.target.value.replace(/\D/g, "")); // Solo números
+            handleValidation("expiryYear", e.target.value);
+          }}
+          maxLength="2" // Longitud exacta de 2 dígitos
+          inputMode="numeric"
+          data-openpay-card="expiration_year"
+        />
+        {errors.expiryYear && <p className="text-red-500 text-sm">{errors.expiryYear}</p>}
+      </div>
+    </div>
+
+    <div className="mb-6">
+      <label className="block text-gray-700">Código de seguridad (CVV)</label>
+      <div className="relative">
+        <input
+          type="text"
+          className={`mt-1 p-2 w-full border ${
+            errors.cvv ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          placeholder="3 o 4 dígitos"
+          value={cvv}
+          onChange={(e) => {
+            setCvv(e.target.value.replace(/\D/g, "")); // Solo números
+            handleValidation("cvv", e.target.value);
+          }}
+          maxLength="4" // Longitud máxima de 4 dígitos
+          inputMode="numeric"
+          data-openpay-card="cvv2"
+        />
+        <img src={imgcvv} alt="CVV" className="absolute right-3 top-3 h-6" />        
+      </div>
+      {errors.cvv && <p className="text-red-500 text-sm">{errors.cvv}</p>}
+    </div>
+
+      {/* Botón de pago */}
+      <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-200"
         >
           Pagar
         </button>
-
         {/* Error */}
         {error && <p className="mt-4 text-red-500">{error}</p>}
-      </form>
-    </div>
+        </form>
+  </div>
   );
 };
 

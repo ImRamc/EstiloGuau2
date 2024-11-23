@@ -78,28 +78,34 @@ const Openpay = require('openpay');
 const openpay = new Openpay('mqmfdl22jfymjamikdso', 'sk_68df529a6f384ba2b2fee0c9dd33f894', false); // Cambia false a true si estás en sandbox
 
 app.post('/api/process-payment', (req, res) => {
-  const { token_id, device_session_id, amount, description } = req.body;
 
   const chargeRequest = {
-    source_id: token_id,
+    source_id: req.body.token_id,
     method: 'card',
-    amount: 799,
+    amount: req.body.amount,
     currency: 'MXN',
-    description: 'esto es una descripcion',
-    device_session_id: device_session_id,
-  };
+    description: req.body.description,
+    device_session_id: req.body.device_session_id,
+    customer: {
+    name: "Estilo",
+    last_name: "Guau",
+    email: "estiloguau@gmail.com",
+    phone_number: "9992107483"
+  }
+  };  
 
   openpay.charges.create(chargeRequest, (error, charge) => {
+    console.log("esto es el body", chargeRequest);
     if (error) {
       console.error("Error al procesar el cargo:", error);
       res.status(500).send({ error: 'Hubo un problema al procesar el pago.' });
     } else {
+      console.log('Datos recibidos:', req.body);
       console.log("Cargo procesado:", charge);
       res.send(charge);
     }
   });
 });
-
 //#endregion
 
 // Rutas
