@@ -14,6 +14,8 @@ function Landing() {
   const { location, city, country } = useContext(LocationContext);
   const [translateY, setTranslateY] = useState(0);
   const [maxTranslateY, setMaxTranslateY] = useState(0);
+  //cookies
+  const [showCookieBanner, setShowCookieBanner] = useState(false);
 
   // Definir el número de secciones
   const numberOfSections = 3;
@@ -21,6 +23,12 @@ function Landing() {
   useEffect(() => {
     // Añadir la clase para deshabilitar el scroll
     document.body.classList.add('no-scroll');
+
+    // Mostrar banner si el usuario no ha aceptado cookies
+    const consent = localStorage.getItem('cookieConsent');
+    if (!consent) {
+      setShowCookieBanner(true);
+    }
     
     // Calcular el límite inferior de desplazamiento
     const calculateMaxTranslateY = () => {
@@ -54,6 +62,11 @@ function Landing() {
       const newY = prevY + window.innerHeight;
       return newY > 0 ? 0 : newY;
     });
+  };
+
+  const handleAcceptCookies = () => {
+    localStorage.setItem('cookieConsent', 'true');
+    setShowCookieBanner(false);
   };
 
 
@@ -142,6 +155,70 @@ function Landing() {
     Abajo
   </HiArrowCircleDown>
 </div>
+
+
+{/* Aviso de Cookies */}
+{showCookieBanner && (
+  <>
+    {/* Fondo translúcido */}
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        width: '100%',
+        backgroundColor: '#333',
+        color: 'white',
+        zIndex: 1000,
+        padding: '15px 0',
+        textAlign: 'center',
+      }}
+    >
+      <p style={{ margin: '0', fontSize: '14px' }}>
+        Este sitio utiliza cookies para mejorar tu experiencia.{' '}
+        <Link
+          to="/politica-de-cookies"
+          style={{ color: '#4CAF50', textDecoration: 'underline' }}
+        >
+          Más información
+        </Link>
+      </p>
+
+      <div style={{ marginTop: '10px' }}>
+        <button
+          onClick={handleAcceptCookies}
+          style={{
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            padding: '8px 15px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            marginRight: '10px',
+          }}
+        >
+          Aceptar
+        </button>
+        <button
+          onClick={() => setShowCookieBanner(false)}
+          style={{
+            backgroundColor: '#e0e0e0',
+            color: '#333',
+            border: 'none',
+            padding: '8px 15px',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '14px',
+          }}
+        >
+          Rechazar
+        </button>
+      </div>
+    </div>
+  </>
+)}
+
 
 
       {/* Footer */}

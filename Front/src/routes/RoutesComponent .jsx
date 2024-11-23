@@ -39,6 +39,7 @@ import Uscupones from '../Pages/Uscupones/Uscupones';
 import DashboardCupones from '../Pages/DashboardCupones/DashboardCupones';
 import DashboardSuscripcion from '../Pages/DashboardSuscripcion/DashboardSuscripcion';
 import SupersetData from '../Pages/DashboardSuperset/SupersetData';
+import Cookies from "../Components/Politics/cookies";
 //#endregion
 
 const RoutesComponent = () => {
@@ -54,6 +55,7 @@ const RoutesComponent = () => {
         <Route path="/Registro" element={<Registro />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Tienda" element={<Tienda />} />
+        <Route path="/politica-de-cookies" element={<Cookies />} />
         
         <Route path="/Suscripciones" element={<Suscripciones />} />      
         <Route path="/Uscupones" element={<Uscupones />} />      
