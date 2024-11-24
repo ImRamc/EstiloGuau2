@@ -2,7 +2,8 @@ import { Modal, Accordion } from "flowbite-react";
 import PaymentForm from '../../Components/Payments/PaymentForm';
 
 
-const ModalPasarelaPago = ({ isOpen, toggleModal, total }) => {
+const ModalPasarelaPago = ({ isOpen, toggleModal, total, carrito }) => {
+  console.log("carrito", carrito)
   return (
     <Modal show={isOpen} onClose={toggleModal} size="7xl">
       <Modal.Header>
@@ -15,7 +16,7 @@ const ModalPasarelaPago = ({ isOpen, toggleModal, total }) => {
               <Accordion.Panel>
                 <Accordion.Title>Tarjeta de crédito o débito</Accordion.Title>
                 <Accordion.Content>
-                  <PaymentForm total={total} />
+                  <PaymentForm total={total} carrito={carrito} />
                 </Accordion.Content>
               </Accordion.Panel>
               <Accordion.Panel>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CartContext } from '../../Context/CartContext';
 import Navbar from '../../Components/Navbar/Navbar';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -8,14 +9,29 @@ import Footer from "../../Components/Footer/Footer";
 import { AiFillStar } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import ModalPasarelaPago from "../../Components/Payments/ModalPasarelaPago";
+import ModalCupones from "../../Components/Payments/ModalCupones";
 
-
-const ResumenPago = () => {
+const ResumenCompra = () => {
+ 
+  const location = useLocation();
+  const { state } = location || {};
+  const { cupon } = state || {};
+  let { porcentaje} = state || {};
+  console.log("Cupon recibido:", cupon);
+  console.log("porcentaje recibido:", porcentaje);
   const { carrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito, disminuirCantidad } = useContext(CartContext);
   const { userData } = useContext(UserContext);
   const descuentoTotal = carrito.reduce((acc, producto) => acc + ((Number(producto.precioOriginal) * Number(producto.cantidad) * Number(producto.productosOferta)) / 100), 0);
-  const subtotal = carrito.reduce((acc, producto) => acc + (Number(producto.precioOriginal) * Number(producto.cantidad)), 0);
-  const total = subtotal - descuentoTotal;
+  let subtotal = carrito.reduce((acc, producto) => acc + (Number(producto.precioOriginal) * Number(producto.cantidad)), 0);
+  let iva = 16;
+  iva = subtotal * (iva / 100);
+  let total = subtotal - descuentoTotal;
+  if(porcentaje != null){
+    porcentaje = (total * (porcentaje / 100)).toFixed(2);
+    porcentaje = parseFloat(porcentaje);
+    total = (total - porcentaje).toFixed(2);
+  }
+  total = parseFloat(total + iva).toFixed(2);
   const [error, setError] = useState(null);
   const { idProducto, talla, cantidad, productosPrecios } = useParams();
   const [producto, setProducto] = useState({
@@ -28,9 +44,9 @@ const ResumenPago = () => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isModalOpenCupon, setIsModalOpenCupon] = useState(false);
   const toggleModal = () => setIsModalOpen((prev) => !prev);
-
+  const toggleModalCupones = () => setIsModalOpenCupon((prev) => !prev);
   // Lógica para obtener el producto
   useEffect(() => {
     const obtenerProducto = async () => {
@@ -87,7 +103,8 @@ const ResumenPago = () => {
                         <p className="font-black">Nombre producto: <span className="font-light">{producto.producto}</span> </p>
                         <p className="font-black">Talla: <span className="font-light">{producto.talla}</span></p>
                         <p className="font-black">Cantidad: <span className="font-light">{producto.cantidad}</span></p>
-                        <p className="font-black">Precio: <span className="font-light">${(producto.precio * producto.cantidad).toFixed(2)}</span></p>
+                        <p className="font-black">Precio: <span className="font-light">${(producto.precioSeleccionado
+                            * producto.cantidad).toFixed(2)}</span></p>
                       </div>
                       <div className="flex items-center">
                     <button
@@ -115,16 +132,6 @@ const ResumenPago = () => {
                 )}                
               </div>
             </section>
-            <div className="flex items-center justify-end w-1/2">
-              <input
-                type="text"
-                placeholder="Ingresa tu cupón de descuento"
-                className="border rounded-lg p-2 w-1/4 mr-4"
-              />
-              <button className="bg-custom text-black px-4 py-2 rounded-lg">
-                Aplicar
-              </button>
-            </div>
           </div>
 
           <div className="space-y-2">
@@ -144,19 +151,37 @@ const ResumenPago = () => {
                     <span>Ahorrado</span>
                     <span>-${descuentoTotal}</span>
                   </div>
-                  <div className="flex justify-between">
+            {cupon != null ? (
+        <>
+          <div className="flex justify-between">
+            <span>Cupon aplicado</span>
+            <span>{cupon}</span>
+          </div>
+          <div className="flex justify-between  text-red-500">
+            <span>Descuento aplicado</span>
+            <span>-${porcentaje}</span>
+          </div>
+        </>
+      ) : 
+      <div className="flex justify-between">
                   <span>Código promocional</span>
               <input
-                type="text"
+                type="button"
+                value={"Escribe el código"}
                 placeholder="Escribe el código"
                 className="border-0 underline rounded-lg bg-custom flex items-end"
-              />
+                onClick={toggleModalCupones}/>
             </div>
-                  <div className="flex justify-between font-bold mt-2">
+      }
+      <div className="flex justify-between">
+            <span>IVA</span>
+            <span>+${iva}</span>
+          </div>
+            <div className="flex justify-between">
                     <span>Total</span>
-                    <span id='total-compra'>${total}</span>
-                  </div>
-                
+                    <span>${total}</span>
+                  </div>                
+                        
                 {/* Botón de pago */}
                 <div className="">
                     <button 
@@ -169,9 +194,12 @@ const ResumenPago = () => {
               )}
           </div>          
       </div>
-
       <div>
-      <ModalPasarelaPago isOpen={isModalOpen} toggleModal={toggleModal} total={total} />
+                  <ModalCupones isOpen={isModalOpenCupon} toggleModal={toggleModalCupones} />
+
+                  </div>
+      <div>
+      <ModalPasarelaPago isOpen={isModalOpen} toggleModal={toggleModal} total={total} carrito={carrito} />
     </div>
     </div>
     <Footer />
@@ -181,4 +209,4 @@ const ResumenPago = () => {
 
 
 
-export default ResumenPago;
+export default ResumenCompra;

@@ -9,12 +9,15 @@ import { Pagination, Checkbox, Label, Radio, Sidebar, RangeSlider, SidebarCollap
 import axios from 'axios';
 import { LocationContext } from '../../Context/LocationContext';
 
-
 function Tienda() {
   const { userData } = useContext(UserContext);
-  const { location, city, country, latitude, longitude } = useContext(LocationContext); // Asegúrate de que latitude y longitude estén disponibles
+  const { location, setLocation } = useContext(LocationContext);
+  const { latitude, longitude } = useContext(LocationContext);
+
+
   const [tiendasCercanas, setTiendasCercanas] = useState([]);
-  //const { agregarAlCarrito } = useContext(CartContext);
+  const [selectedTienda, setSelectedTienda] = useState(null);
+
   const { idUsuario } = userData;
 
   // Estados para productos, filtros y marcas
@@ -26,7 +29,7 @@ function Tienda() {
   const [temporadas, setTemporadas] = useState([]);
   const [tallas, setTallas] = useState([]);
   const [Ofertas, setOfertas] = useState([]);
-  //const [Tienda, setTiendas] = useState([]);
+  const [Tiendas, setTiendas] = useState([]);
   const [selectedSeasons, setSelectedSeasons] = useState([]);
   //const [selectedSize, setSelectedSize] = useState([]);
   const [searchBrand, setSearchBrand] = useState('');
@@ -37,18 +40,19 @@ function Tienda() {
     marca: '',
     talla: '',
     tienda: '',
-    oferta: '' 
+    oferta: '',
+    distancia: 1,
   });
 
   // Estados para búsqueda y paginación
- // const [debouncedTerm, setDebouncedTerm] = useState('');
+  // const [debouncedTerm, setDebouncedTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(16);
 
   // Estados para favoritos y carrito
-const [favorites, setFavorites] = useState([]);
-const [favoritos, setFavoritos] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [favoritos, setFavoritos] = useState([]);
   //const [agregado, setAgregado] = useState(false);
   /*const [carrito, setCarrito] = useState(() => {
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito'));
@@ -77,7 +81,7 @@ const [favoritos, setFavoritos] = useState([]);
   //Buscador
   useEffect(() => {
     setFilteredProducts(
-      products.filter(product => 
+      products.filter(product =>
         (product.producto && product.producto.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     );
@@ -107,23 +111,27 @@ const [favoritos, setFavoritos] = useState([]);
 
     const fetchFilters = async () => {
       try {
-        const [temporadasResponse, tallasResponse, tiendaResponse] = await Promise.all([
+        const [temporadasResponse, tallasResponse, ofertaResponse, tiendaResponse] = await Promise.all([
           fetch('http://localhost:3001/temporada'),
           fetch('http://localhost:3001/tallas'),
-          fetch('http://localhost:3001/all-ofertas')
+          fetch('http://localhost:3001/all-ofertas'),
+          fetch('http://localhost:3001/all-vendedor'),
         ]);
 
         const temporadasData = await temporadasResponse.json();
         const tallasData = await tallasResponse.json();
-        const ofertaData = await tiendaResponse.json();
+        const ofertaData = await ofertaResponse.json();
+        const tiendaData = await tiendaResponse.json();
 
         setTemporadas(temporadasData);
         setTallas(tallasData);
         setOfertas(ofertaData);
+        setTiendas(tiendaData);
       } catch (error) {
         console.error('Error fetching filter data:', error);
       }
     };
+
 
     fetchProducts();
     fetchFilters();
@@ -152,32 +160,46 @@ const [favoritos, setFavoritos] = useState([]);
   // Filtrar productos según los filtros seleccionados
   const filterProducts = () => {
     let updatedProducts = [...products];
+
+    console.log(updatedProducts)
     if (selectedSeasons.length) updatedProducts = updatedProducts.filter(product => selectedSeasons.includes(product.idTemporada));
     if (filters.precioMin) updatedProducts = updatedProducts.filter(product => product.precio >= parseFloat(filters.precioMin));
     if (filters.precioMax) updatedProducts = updatedProducts.filter(product => product.precio <= parseFloat(filters.precioMax));
     if (selectedBrands.length) updatedProducts = updatedProducts.filter(product => selectedBrands.includes(product.Marca));
     if (filters.talla) {
-      updatedProducts = updatedProducts.filter(product => 
+      updatedProducts = updatedProducts.filter(product =>
         product.tallas_disponibles.split(',').includes(filters.talla)
-      );}
-      
-      if (filters.oferta) {
-        updatedProducts = updatedProducts.filter(product => 
-          product.ofertas.split(',').includes(String(filters.oferta))
-        );
-      }
-      
-      
+      );
+    }
+
+    if (filters.oferta) {
+      updatedProducts = updatedProducts.filter(product =>
+        product.ofertas.split(',').includes(String(filters.oferta))
+      );
+    }
+    if (filters.tienda) {
+      updatedProducts = updatedProducts.filter(product =>
+        product.tiendas.split(',').includes(String(filters.tienda))
+      );
+    }
+
+
     setFilteredProducts(updatedProducts);
   };
 
   // Manejo de cambios en filtros y paginación
-  const handleFilterChange = (e) => setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  }
   const onPageChange = (page) => setCurrentPage(page);
   const handleApplyFilters = () => {
+
     filterProducts();
     setCurrentPage(1);
   };
+
+
 
   // Funciones para manejar cambios en marcas, temporadas y tiendas
   const handleBrandChange = (brand) => {
@@ -194,6 +216,13 @@ const [favoritos, setFavoritos] = useState([]);
     setFilters((prev) => ({
       ...prev,
       oferta: OfferId,  // Aquí asegúrate de actualizar correctamente el filtro
+    }));
+  };
+
+  const handleTiendaChange = (idVendedor) => {
+    setFilters((prev) => ({
+      ...prev,
+      tienda: idVendedor, // Actualiza el filtro de tienda con el id del vendedor
     }));
   };
 
@@ -226,60 +255,78 @@ const [favoritos, setFavoritos] = useState([]);
   };
 
   // Manejador de cambio de búsqueda
-const handleSearchChange = (e) => {
-  setSearchTerm(e.target.value);
-};
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
-useEffect(() => {
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error obteniendo ubicación:", error);
+        }
+      );
+    }
+  }, []);
+
   const obtenerTiendasCercanas = async () => {
     if (location) {
+      console.log("Ubicación:", location);
       try {
-        // Supongamos que tienes un endpoint que acepta latitud y longitud
-        const response = await axios.post("/api/tiendas/cercanas", {
-          latitud: location.latitude,
-          longitud: location.longitude,
-          radio: 5, // Radio en km
+        const response = await axios.post("http://localhost:3001/api/tiendas/cercanas", {
+          latitud: latitude,
+          longitud: longitude,
+          radio: filters.distancia, // Radio en km
         });
+
+        console.log("Respuesta del backend:", response.data); // Verifica los datos
         setTiendasCercanas(response.data);
       } catch (error) {
         console.error("Error al obtener tiendas cercanas:", error);
       }
     }
-
   };
-  obtenerTiendasCercanas();
-}, [location]);
-  
+
+  useEffect(() => {
+    obtenerTiendasCercanas(); // Llamamos a la función cuando cambian los filtros o la ubicación
+  }, [location, filters]);
+
   // Variables de paginación y marcas mostradas
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const filteredBrands = brands.filter((brand) => brand.toLowerCase().includes(searchBrand.toLowerCase()));
   const displayedBrands = showAllBrands ? filteredBrands : filteredBrands.slice(0, 10);
+  const filteredTiendas = selectedTienda
+    ? tiendasCercanas.filter(tienda => tienda.idVendedor === Number(selectedTienda))
+    : tiendasCercanas;
 
 
+
+  const handleClearSelection = () => {
+    setSelectedTienda(null); // Restablecer la selección de la tienda
+  };
 
   return (
-    <div className="flex flex-col min-h-screen pt-28">
+    <div className="flex flex-col min-h-screen pt-20">
       <Navbar /> {/* Navbar arriba */}
 
       <div className="flex flex-1">
         {/* Sidebar de Filtros a la izquierda */}
-        <Sidebar className="w-1/5 border-r p-10">
+        <Sidebar className="w-2/1 border-r p-5">
           <h1 className="font-bold text-3xl mb-8">Filtros</h1>
           <Sidebar.Items >
-            <Sidebar.ItemGroup className='py-2'>
+            <Sidebar.ItemGroup className='py-2 mx-5'>
               {/* Marca */}
-              <Sidebar.Collapse label="Marca"  className='shadow-md my-5'>
+              <Sidebar.Collapse label="Marca" className='shadow-md my-5'>
                 <Sidebar.Item>
                   <div className="p-4">
-                    {/*<input
-                      type="text"
-                      placeholder="Buscar marca"
-                      value={searchBrand}
-                      onChange={(e) => setSearchBrand(e.target.value)}
-                      className="p-2 border border-gray-100 rounded w-full mb-2"
-                    />*/}
                     {displayedBrands.map((brand) => (
                       <div key={brand} className="flex items-center space-x-3 space-y-2 ">
                         <Checkbox
@@ -321,22 +368,52 @@ useEffect(() => {
                 </Sidebar.Item>
               </Sidebar.Collapse>
               {/* tienda */}
-              <Sidebar.Collapse label="tienda"  className='shadow-md my-5'>
+              <Sidebar.Collapse label="Tiendas cercanas" className='shadow-md my-5'>
                 <Sidebar.Item>
-                <div>
-      <h2>Tiendas cercanas</h2>
-      {tiendasCercanas.length > 0 ? (
-        tiendasCercanas.map((tienda) => (
-          <div key={tienda.id}>
-            <h3>{tienda.nombre}</h3>
-            <p>Dirección: {tienda.direccion}</p>
-            <p>Distancia: {tienda.distance.toFixed(2)} km</p>
-          </div>
-        ))
-      ) : (
-        <p>No se encontraron tiendas cercanas.</p>
-      )}
-    </div>
+                  <div>
+                    {/* Filtro de Distancia con RangeSlider */}
+                    <Label className="block mt-4 space-x-3 space-y-2">Distancia seleccionada: </Label>
+                    <span className='font-normal'> {filters.distancia} km</span>
+                    <RangeSlider
+                      min={1}
+                      max={100}
+                      step={1}
+                      value={filters.distancia}
+                      name="distancia"
+                      onChange={handleFilterChange} // Actualiza el filtro de distancia      
+                    />
+                      <h2 className="font-semibold my-2">Tiendas cercanas:</h2>
+                      {tiendasCercanas.length > 0 ? (
+                        tiendasCercanas.map((tienda) => (
+                          <div className="w-full" key={tienda.idVendedor}>
+                            <label className="inline-flex items-center space-x-3">
+                              <Radio
+                                id={`tienda-${tienda.idVendedor}`}
+                                name="tienda"
+                                value={tienda.idVendedor}
+                                checked={String(filters.tienda) === String(tienda.idVendedor)}
+                                onChange={(e) => handleTiendaChange(e.target.value)}
+                              />
+
+                              <p className="">
+                                <p className="font-bold">{tienda.nom_empresa}</p>
+                                <p>Distancia: {tienda.distancia.toFixed(2)} km</p>
+                              </p>
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No se encontraron tiendas cercanas.</p>
+                      )}
+                      <div className="mt-4 flex space-x-4">
+                        <button
+                          onClick={handleClearSelection}
+                          className="text-blue-500 mt-4"
+                        >
+                          Limpiar Selección
+                        </button>
+                      </div>
+                  </div>
                 </Sidebar.Item>
               </Sidebar.Collapse>
 
@@ -351,7 +428,7 @@ useEffect(() => {
                           checked={selectedSeasons.includes(temporada.idTemporada)}
                           onChange={() => handleSeasonChange(temporada.idTemporada)}
                         />
-                        <Label  htmlFor={`temporada-${temporada.idTemporada}`}>
+                        <Label htmlFor={`temporada-${temporada.idTemporada}`}>
                           {temporada.nombre}
                         </Label>
                       </div>
@@ -367,7 +444,7 @@ useEffect(() => {
               </Sidebar.Collapse>
 
               {/* Tallas */}
-              <Sidebar.Collapse label="Tallas"  className='shadow-md my-5'>
+              <Sidebar.Collapse label="Tallas" className='shadow-md my-5'>
                 <Sidebar.Item>
                   <div className="mt-4">
                     {tallas.map((talla) => (
@@ -393,60 +470,59 @@ useEffect(() => {
               </Sidebar.Collapse>
 
               {/* Ofertas */}
-              <Sidebar.Collapse label="Ofertas"  className='shadow-md my-5'>
+              <Sidebar.Collapse label="Ofertas" className='shadow-md my-5'>
                 <Sidebar.Item>
-                
-<div className="mt-4">
-  {Ofertas.map((Oferta) => (
-    <div key={Oferta.idOferta} className="flex items-center space-x-3 space-y-2">
-      <Radio
-        id={`Oferta-${Oferta.idOferta}`}
-        name="Oferta"
-        value={Oferta.idOferta}
-        checked={String(filters.oferta) === String(Oferta.idOferta)}
-        onChange={() => handleOfferChange(Oferta.idOferta)}   // Cambia el estado cuando se selecciona una oferta
-      />
-      <Label htmlFor={`Oferta-${Oferta.idOferta}`}>{Oferta.descripcion}</Label>
-    </div>
-  ))}
-                <button
-  onClick={() => setFilters((prevFilters) => ({ ...prevFilters, oferta: '' }))}
-  className="text-blue-500 mt-2"
->
-  Limpiar selección
-</button>
+                  <div className="mt-4">
+                    {Ofertas.map((Oferta) => (
+                      <div key={Oferta.idOferta} className="flex items-center space-x-3 space-y-2">
+                        <Radio
+                          id={`Oferta-${Oferta.idOferta}`}
+                          name="Oferta"
+                          value={Oferta.idOferta}
+                          checked={String(filters.oferta) === String(Oferta.idOferta)}
+                          onChange={() => handleOfferChange(Oferta.idOferta)}   // Cambia el estado cuando se selecciona una oferta
+                        />
+                        <Label htmlFor={`Oferta-${Oferta.idOferta}`}>{Oferta.descripcion}</Label>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => setFilters((prevFilters) => ({ ...prevFilters, oferta: '' }))}
+                      className="text-blue-500 mt-2"
+                    >
+                      Limpiar selección
+                    </button>
                   </div>
                 </Sidebar.Item>
               </Sidebar.Collapse>
 
               {/* Precio Mínimo y Máximo */}
-              <SidebarCollapse label="Precio"  className='shadow-md my-5'>
-              <Sidebar.Item>
-                <Label className="block mt-4 space-x-3 space-y-2">Precio Mínimo: ${filters.precioMin}</Label>
-                <RangeSlider
-                  min={0}
-                  max={1000}
-                  step={10}
-                  value={filters.precioMin}
-                  onChange={(e) => handlePriceChange(Number(e.target.value), 'precioMin')}
-                />
-                <Label className="block mt-4 space-x-3 space-y-2">Precio Máximo: ${filters.precioMax}</Label>
-                <RangeSlider
-                  min={filters.precioMin}
-                  max={1000}
-                  step={10}
-                  value={filters.precioMax}
-                  onChange={(e) => handlePriceChange(Number(e.target.value), 'precioMax')}
-                />
-                <button
-                  onClick={() => setFilters({ precioMin: 0, precioMax: 1000 })}
-                  className="text-blue-500 mt-4"
-                >
-                  Restablecer Precios
-                </button>
-              </Sidebar.Item>
+              <SidebarCollapse label="Precio" className='shadow-md my-5'>
+                <Sidebar.Item>
+                  <Label className="block mt-4 space-x-3 space-y-2">Precio Mínimo: ${filters.precioMin}</Label>
+                  <RangeSlider
+                    min={0}
+                    max={1000}
+                    step={10}
+                    value={filters.precioMin}
+                    onChange={(e) => handlePriceChange(Number(e.target.value), 'precioMin')}
+                  />
+                  <Label className="block mt-4 space-x-3 space-y-2">Precio Máximo: ${filters.precioMax}</Label>
+                  <RangeSlider
+                    min={filters.precioMin}
+                    max={1000}
+                    step={10}
+                    value={filters.precioMax}
+                    onChange={(e) => handlePriceChange(Number(e.target.value), 'precioMax')}
+                  />
+                  <button
+                    onClick={() => setFilters({ precioMin: 0, precioMax: 1000 })}
+                    className="text-blue-500 mt-4"
+                  >
+                    Restablecer Precios
+                  </button>
+                </Sidebar.Item>
               </SidebarCollapse>
-              
+
 
               {/* Tiendas 
               <Sidebar.Collapse label="Tiendas">
@@ -483,48 +559,48 @@ useEffect(() => {
         </Sidebar>
 
 
-        <div className="w-3/4 p-3 flex flex-col"> {/* Contenedor de productos y tabs */}
+        <div className="w-full px-10 flex flex-col"> {/* Contenedor de productos y tabs */}
           {/* Buscador siempre visible arriba */}
           <div>
-    {/* Buscador */}
-    <div className="flex justify-end">
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="w-full pl-10 pr-4 py-2 border border-custom rounded-full focus:outline-none focus:ring-2 focus:ring-custom"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg
-            className="h-5 w-5 text-gray-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 18l6-6M4 10a6 6 0 1112 0 6 6 0 01-12 0z"
-            />
-          </svg>
-        </div>
-      </div>
-    </div>
+            {/* Buscador */}
+            <div className="flex justify-end">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Buscar..."
+                  className="w-full pl-10 pr-4 py-2 border border-custom rounded-full focus:outline-none focus:ring-2 focus:ring-custom"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  <svg
+                    className="h-5 w-5 text-gray-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 18l6-6M4 10a6 6 0 1112 0 6 6 0 01-12 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
 
-    {/* Muestra productos filtrados */}
-    <div className="product-list">
-      {filteredProducts.map(product => (
-        <div key={product.id} className="product-item ">
-          {/* Renderiza cada producto aquí */}
-          <h3>{product.nombre}</h3>
-        </div>
-      ))}
-    </div>
-  </div>
+            {/* Muestra productos filtrados */}
+            <div className="product-list">
+              {filteredProducts.map(product => (
+                <div key={product.id} className="product-item ">
+                  {/* Renderiza cada producto aquí */}
+                  <h3>{product.nombre}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
 
 
           <div className="products grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 p-4">

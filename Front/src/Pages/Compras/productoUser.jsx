@@ -36,7 +36,8 @@ const ProductoUser = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+<div className="">
+<div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="pt-28 px-10">
         {/* Botón de volver al perfil sin texto */}
@@ -51,9 +52,9 @@ const ProductoUser = () => {
               <div key={compra.idCompra} className="bg-white shadow-lg rounded-lg p-4 flex flex-col">
                 <img src={`http://localhost:3001/images/${compra.foto}`} className="h-24 w-24 rounded-full mb-4 mx-auto" alt="Producto" />
                 <h3 className="font-bold">{compra.descripcion_producto}</h3>
-                <p>Precio: ${compra.precio}</p>
-                <p>Talla: {compra.talla}</p>
-                <p>Cantidad: {compra.cantidad_producto}</p>
+                <p  className='font-semibold'>Precio: <span className="font-normal">${compra.precio}</span> </p>
+                <p className="font-bold">Talla: <span className="font-normal"> {compra.talla} </span></p>
+                <p className="font-bold">Cantidad: <span className="font-normal"> {compra.cantidad_producto}</span></p>
                 <button 
                   className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" 
                   onClick={() => handleOpenModal(compra)}
@@ -74,7 +75,7 @@ const ProductoUser = () => {
           <div className="bg-white rounded-lg p-6 shadow-lg w-1/2">
             <h2 className="text-2xl font-bold mb-4">{selectedProduct?.producto}</h2>
             <img src={`http://localhost:3001/images/${selectedProduct?.foto}`} alt={selectedProduct?.producto} className="w-full h-48 object-cover mb-4" />
-            <p className="text-lg"><strong>Descripción:</strong> {selectedProduct?.descripcion}</p>
+            <p className="text-lg "><strong>Descripción:</strong> {selectedProduct?.descripcion}</p>
             <p className="text-lg"><strong>Precio:</strong> ${selectedProduct?.precio}</p>
             <p className="text-lg"><strong>Talla:</strong> {selectedProduct?.talla}</p>
             <p className="text-lg"><strong>Cantidad:</strong> {selectedProduct?.cantidad_producto}</p>
@@ -83,8 +84,12 @@ const ProductoUser = () => {
           </div>
         </div>
       )}
-      <Footer/>
+
     </div>
+    <div className="">
+     <Footer/>
+     </div>
+</div>
   );
 };
 

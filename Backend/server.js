@@ -87,12 +87,12 @@ app.post('/api/process-payment', (req, res) => {
     description: req.body.description,
     device_session_id: req.body.device_session_id,
     customer: {
-    name: "Estilo",
-    last_name: "Guau",
-    email: "estiloguau@gmail.com",
-    phone_number: "9992107483"
-  }
-  };  
+      name: "Estilo",
+      last_name: "Guau",
+      email: "estiloguau@gmail.com",
+      phone_number: "9992107483"
+    }
+  };
 
   openpay.charges.create(chargeRequest, (error, charge) => {
     console.log("esto es el body", chargeRequest);
@@ -289,27 +289,29 @@ app.get('/todas-compras/:idUsuario', async (req, res) => {
 
   const query = `
     SELECT 
-        producto.producto AS nombre_producto, 
-        producto.descripcion, 
-        producto.precio,
-        SUBSTRING_INDEX(producto.foto, ',', 1) AS primera_foto,
-        tallas.talla,
-        compra.cantidad_producto,
-        compra.idUsuario,
-        compra.idCompra,
-        usuario.nombre AS cliente
-    FROM 
-        compra 
-    JOIN 
-        producto ON compra.idProducto = producto.idProducto
-    JOIN
-        tallas ON producto.idTalla = tallas.idTalla
-    JOIN
-        usuario ON compra.idUsuario = usuario.idUsuario
-    WHERE 
-        compra.idUsuario = ?
-    ORDER BY 
-        compra.idCompra DESC`;
+    producto.producto AS nombre_producto, 
+    producto.descripcion, 
+    inventario.precio,
+    SUBSTRING_INDEX(producto.foto, ',', 1) AS primera_foto,
+    tallas.talla,
+    compra.cantidad_producto,
+    compra.idUsuario,
+    compra.idCompra,
+   CONCAT(usuario.nombre, ' ', usuario.apellido) AS cliente
+FROM 
+    compra
+JOIN 
+    producto ON compra.idProducto = producto.idProducto
+JOIN 
+    inventario ON inventario.idProducto = producto.idProducto AND compra.idTalla = inventario.idTalla
+JOIN 
+    tallas ON inventario.idTalla = tallas.idTalla
+JOIN 
+    usuario ON compra.idUsuario = usuario.idUsuario
+WHERE 
+    compra.idUsuario = 2
+ORDER BY 
+    compra.idCompra DESC;`;
 
   try {
     const [results] = await connection.execute(query, [idUsuario]);
@@ -764,7 +766,7 @@ app.get('/productos/:id', async (req, res) => {
       res.status(404).json({ message: 'Producto no encontrado' });
     } else {
       res.json(results[0]);
-     console.log(results[0])
+      console.log(results[0])
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -779,7 +781,7 @@ app.get('/productosprecios/:idProducto/:Talla', async (req, res) => {
       res.status(404).json({ message: 'Producto no encontrado' });
     } else {
       res.json(results[0]);
-     console.log(results[0])
+      console.log(results[0])
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -799,7 +801,7 @@ app.get('/tallasxidproducto/:id', async (req, res) => {
       res.status(404).json({ message: 'Producto no encontrado' });
     } else {
       res.json(results);
-     // console.log("si es este")
+      // console.log("si es este")
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -824,8 +826,8 @@ app.get('/detalleproducto/:id', async (req, res) => {
 
 //Agregar Producto
 app.post('/producto-nuevo', upload.array('foto', 4), async (req, res) => {
- // console.log("Datos recibidos:", req.body);
-//console.log("Archivos recibidos:", req.files);
+  // console.log("Datos recibidos:", req.body);
+  //console.log("Archivos recibidos:", req.files);
   const { idVendedor, sku, producto, Marca, precios, idTemporada, descripcion, ofertas, fecha_ingreso, cantidades, tallas } = req.body;
   const fotos = req.files.map(file => file.filename); // Obtener los nombres de los archivos subidos
 
@@ -1026,7 +1028,7 @@ app.get('/api/suscripciones/por-tipo', async (req, res) => {
                        GROUP BY nombre_sub`;
     const [resultTipo] = await connection.query(queryTipo);
 
-    res.json(resultTipo); 
+    res.json(resultTipo);
   } catch (error) {
     console.error('Error al obtener suscripciones por tipo:', error);
     res.status(500).json({ error: 'Error al obtener suscripciones por tipo' });
@@ -1074,7 +1076,7 @@ app.get('/api/suscripciones/total-empresas', async (req, res) => {
       FROM suscripcion
       JOIN vendedor ON suscripcion.id_sub = vendedor.id_sub
     `);
-    
+
     res.json({ total_empresas: result[0][0].total_empresas });
   } catch (error) {
     console.error('Error al obtener total de empresas:', error);
@@ -1391,50 +1393,53 @@ Join inventario on inventario.idProducto = producto.idProducto
 //Tienda
 
 app.post('/nueva-compra', async (req, res) => {
+  console.log("nueva-compra body", req.body)
   const { idUsuario, idProducto, cantidad_producto, idTalla, precio } = req.body;
   const fechaCompra = new Date().toISOString().slice(0, 10); // Obtener la fecha actual en formato YYYY-MM-DD
   let existencias = 0;
   let success = false;
-  
 
-const queryconsulta = 'SELECT  i.existencias FROM inventario i JOIN producto p ON p.idProducto = i.idProducto WHERE p.idProducto = ? AND i.idTalla = ?'
-try {
-  const [results] = await connection.execute(queryconsulta, [idProducto, idTalla]);
-  console.log(results[0].existencias);
 
-   existencias = results[0].existencias;
+  const queryconsulta = 'SELECT  i.existencias FROM inventario i JOIN producto p ON p.idProducto = i.idProducto WHERE p.idProducto = ? AND i.idTalla = ?'
+  try {
+    const [results] = await connection.execute(queryconsulta, [idProducto, idTalla]);
+    console.log(results[0].existencias);
 
-  if (results.length === 0) {
-    return res.status(404).json({ message: 'No se encontraron compras' });
+    existencias = results[0].existencias;
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron compras' });
+    }
+
+    if (existencias > 0) {
+      const query = 'INSERT INTO compra (idUsuario, idProducto, cantidad_producto, fecha_compra, idTalla, precio, entregado) VALUES (?, ?, ?, ?, ?, ?, ?)';
+      await connection.query(query, [idUsuario, idProducto, cantidad_producto, fechaCompra, idTalla, precio, false], (error, results) => {
+        if (error) {
+          res.status(400).json({ message: error.message });
+          console.log("se insertó con exito");
+        } else {
+          success = true;
+          console.log("se insertó con exito");
+        }
+      });
+    }
+    if (success = true) {
+      const queryUpdate = 'UPDATE inventario AS i JOIN producto AS p ON p.idProducto = i.idProducto SET i.existencias = i.existencias - ? WHERE p.idProducto = ? AND i.idTalla = ?;'
+      await connection.query(queryUpdate, [cantidad_producto, idProducto, idTalla], (error, results) => {
+        if (error) {
+          res.status(400).json({ message: error.message });
+        } else {
+          success = true;
+          console.log("se actualizó con exito");
+        }
+      });
+    }
+
+    res.json(results);
+  } catch (error) {
+    console.error('Error al obtener las compras:', error);
+    res.status(500).json({ message: error.message });
   }
-
-  if (existencias > 0) {
-    const query = 'INSERT INTO compra (idUsuario, idProducto, cantidad_producto, fecha_compra, idTalla, precio, entregado) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    await connection.query(query, [idUsuario, idProducto, cantidad_producto, fechaCompra , idTalla, precio, false], (error, results) => {
-      if (error) {
-        res.status(400).json({ message: error.message });
-        console.log("se insertó con exito");
-      } else {
-        success = true;
-        console.log("se insertó con exito");
-  }});
-  }
-  if (success = true ){
-    const queryUpdate = 'UPDATE inventario AS i JOIN producto AS p ON p.idProducto = i.idProducto SET i.existencias = i.existencias - ? WHERE p.idProducto = ? AND i.idTalla = ?;'
-        await connection.query(queryUpdate, [cantidad_producto, idProducto , idTalla], (error, results) => {
-          if (error) {
-            res.status(400).json({ message: error.message });
-          } else {
-            success = true;
-            console.log("se actualizó con exito");
-      }});
-  }
-  
-  res.json(results);
-} catch (error) {
-  console.error('Error al obtener las compras:', error);
-  res.status(500).json({ message: error.message });
-}
 
 });
 
@@ -1565,7 +1570,7 @@ app.put('/cupones/:id', async (req, res) => {
   }
 });
 
-// cupones  por us
+// cupones  por idVendedor
 app.get('/cuponesxus/:idVendedor', async (req, res) => {
   const { idVendedor } = req.params; // Obtener idVendedor desde los parámetros de la URL
 
@@ -1583,6 +1588,47 @@ app.get('/cuponesxus/:idVendedor', async (req, res) => {
 
     // Enviar los resultados mapeados como respuesta
     res.json(mappedResults);
+  } catch (error) {
+    console.error('Error en la consulta:', error); // Log del error
+    res.status(500).json({ message: error.message });
+  }
+});
+// cupones  por idVendedor
+app.get('/apply-cupon/:codigo/:idUsuario', async (req, res) => {
+  const { codigo, idUsuario } = req.params; // Obtener idVendedor desde los parámetros de la URL
+  const query = 'select idCupon, CAST(status AS UNSIGNED) AS Usado, cupon  from cupones where codigo = ?';
+
+  try {
+    const [results] = await connection.execute(query, [codigo]);
+    if (results[0] != null) {
+      if (results[0].Usado == 0) {
+
+        const queryxus = 'select CAST(Usado AS UNSIGNED) AS Usado from cuponxusuario where idCupon = ? and idUsuario=?';
+        const [resultsxus] = await connection.execute(queryxus, [results[0].idCupon, idUsuario]);
+        console.log(resultsxus)
+        if (resultsxus[0] != null) {
+          if (resultsxus[0].Usado == 0) {
+
+            res.json({Usado:resultsxus[0].Usado, porcentaje :results[0].cupon});
+          } 
+          else {
+
+            res.status(200).json({ Usado: 1, message: "El cupon usado" });
+          }
+        }
+        else {
+
+          res.status(200).json({ Usado: 0, porcentaje:results[0].cupon});
+        }
+        
+      }
+      else {
+        res.status(200).json({ Usado: 1, message: "El cupon vencido" });
+      }
+    }
+    else {
+      res.status(200).json({ Usado: 1, message: "El cupon no existe" });
+    }
   } catch (error) {
     console.error('Error en la consulta:', error); // Log del error
     res.status(500).json({ message: error.message });
@@ -2218,7 +2264,7 @@ app.get('/registros/:id', async (req, res) => {
   }
 });
 
-app.put('/registros/:id', upload.array('foto', 4), async (req, res) => { 
+app.put('/registros/:id', upload.array('foto', 4), async (req, res) => {
   const { idProducto, IdVendedor, Marca, producto, sku, descripcion, fecha_ingreso, idTemporada, porcentaje_descuento, idTalla, Talla, precio } = req.body;
 
   let foto = '';
@@ -2244,7 +2290,7 @@ app.put('/registros/:id', upload.array('foto', 4), async (req, res) => {
     console.log(error.message);
     return res.status(400).json({ message: error.message });
   }
-  
+
   try {
     const registros = JSON.parse(req.body.registros); // Asegúrate de enviar `registros` en JSON
 
@@ -2305,7 +2351,7 @@ app.get('/total-compras/:idUsuario', async (req, res) => {
 
 app.get('/suscripcionname/:idUsuario', async (req, res) => {
   const idUsuario = req.params.idUsuario;
-  
+
   const query = `
      select nombre_sub from suscripcion
 JOIN usuarioxsub on usuarioxsub.id_sub = suscripcion.id_sub
@@ -2381,6 +2427,66 @@ app.post("/send-notification", (req, res) => {
       res.sendStatus(500);
     });
 });
+
+app.post('/api/tiendas/cercanas', async (req, res) => {
+  const { latitud, longitud, radio } = req.body;
+  console.log("filtro tienda",req.body)
+
+  // Validar los parámetros
+  if (!latitud || !longitud || !radio) {
+    return res.status(400).json({ error: 'Faltan parámetros necesarios' });
+  }
+
+  // Consulta SQL para calcular la distancia usando la fórmula Haversine
+  const query = `
+    SELECT idVendedor, nom_empresa, latitud, longitud,
+    (6371 * acos(cos(radians(?)) * cos(radians(latitud)) * cos(radians(longitud) - radians(?)) + sin(radians(?)) * sin(radians(latitud)))) AS distancia
+    FROM vendedor
+    HAVING distancia < ?
+    ORDER BY distancia;
+  `;
+
+  try {
+    // Usamos execute en lugar de query para evitar inyecciones SQL
+    const [results] = await connection.execute(query, [latitud, longitud, latitud, radio]);
+
+    // Devolver los resultados de las tiendas cercanas
+    console.log("resultados ubicacion", results)
+    res.json(results);
+  } catch (error) {
+    console.error('Error al realizar la consulta:', error);
+    return res.status(500).json({ error: 'Error en la consulta' });
+  }
+});
+
+app.get('/api/productos/filtrar', async (req, res) => {
+  const { idVendedor } = req.body;
+console.log("productos-filtrar", req.body)
+  // Validar el parámetro
+  if (!idVendedor) {
+    return res.status(400).json({ error: 'Falta el parámetro idVendedor' });
+  }
+
+  // Consulta SQL para obtener los productos por idVendedor
+  const query = `
+    SELECT *
+    FROM producto
+    WHERE idVendedor = ?
+    ORDER BY producto ASC;
+  `;
+
+  try {
+    // Usamos execute para proteger contra inyecciones SQL
+    const [results] = await connection.execute(query, [idVendedor]);
+
+    // Devolver los productos filtrados
+    res.json(results);
+  } catch (error) {
+    console.error('Error al realizar la consulta:', error);
+    return res.status(500).json({ error: 'Error en la consulta' });
+  }
+});
+
 
 
 app.listen(3001, () => {

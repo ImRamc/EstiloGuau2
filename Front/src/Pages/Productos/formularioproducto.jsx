@@ -96,6 +96,19 @@ const FormularioProducto = () => {
       console.log("Por favor, complete todos los campos.");
     }
   };
+  const validarFormulario = () => {
+    const erroresTemp = {};
+
+    if (!producto.sku) erroresTemp.sku = "El SKU es obligatorio.";
+    if (!producto.producto) erroresTemp.producto = "El nombre del producto es obligatorio.";
+    if (!producto.Marca) erroresTemp.Marca = "La marca es obligatoria.";
+    if (!producto.idTemporada) erroresTemp.idTemporada = "Debes seleccionar una temporada.";
+    if (!producto.descripcion) erroresTemp.descripcion = "La descripción es obligatoria.";
+    if (!producto.foto || producto.foto.length === 0) erroresTemp.foto = "Debes subir al menos una foto.";
+
+    setErrores(erroresTemp);
+    return Object.keys(erroresTemp).length === 0; // Retorna true si no hay errores.
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -141,12 +154,13 @@ const FormularioProducto = () => {
     }
   };
 
+
  // console.log("Producto actual:", producto);
 //console.log("Filas actuales:", filas);
 //console.log("Datos de tallas:", tallas);
 
   return (
-    <div className="pl-72 pt-28 pr-24 carrito-page flex flex-col min-h-screen shadow-lg">
+    <div className="pl-72 pt-16 pr-24 carrito-page flex flex-col min-h-screen shadow-lg">
       <Navbar />
       <Sidebar />
       <div className="carrito-container mx-5 flex-1">

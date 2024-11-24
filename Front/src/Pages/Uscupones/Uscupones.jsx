@@ -3,7 +3,6 @@ import { UserContext } from '../../Context/UserContext';
 import Navbar from "../../Components/Navbar/Navbar";
 import { Button, Card } from "flowbite-react";
 import axios from "axios";
-import { UscuponesModal } from "../../Components/ModalCupones/ModalCupones"; // Asegúrate de importar el modal aquí
 
 export function Uscupones() {
   const { userData } = useContext(UserContext);
@@ -121,12 +120,7 @@ export function Uscupones() {
         )}
       </div>
 
-      {/* Modal de productos con el cupón */}
-      <UscuponesModal
-        productos={productos}
-        isModalOpen={isModalOpen}
-        closeModal={closeModal}
-      />
+     
     </div>
   );
 }

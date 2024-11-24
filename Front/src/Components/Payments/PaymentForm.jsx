@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import card1 from "../../img/Payments/cards1.png";
 import cards2 from "../../img/Payments/cards2.png";
 import imgcvv from "../../img/Payments/cvv.png";
 import openpay from "../../img/Payments/openpay.png";
 import security from "../../img/Payments/security.png";
+import { toast } from 'react-toastify';
+  import { UserContext } from '../../Context/UserContext';
+  import { useParams, useNavigate } from 'react-router-dom';
+  import axios from 'axios';
 
-const PaymentForm = ({total}) => {
+
+
+const PaymentForm = ({total, carrito}) => {
+  const { userData } = useContext(UserContext);
+  const { idProducto, talla, cantidad, productosPrecios } = useParams();
   const [cardHolderName, setCardHolderName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiryMonth, setExpiryMonth] = useState("");
@@ -13,6 +21,7 @@ const PaymentForm = ({total}) => {
   const [cvv, setCvv] = useState("");
   const [errors, setErrors] = useState({});
   const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
   useEffect(() => {
     OpenPay.setId("mqmfdl22jfymjamikdso");
@@ -20,8 +29,26 @@ const PaymentForm = ({total}) => {
     OpenPay.setSandboxMode(true); // Cambia a false en producción
   }, []);
 
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
+    try {
+      for (const item of carrito) {
+        console.log("Esto es el producto que se está procesando:", item);
+        const precioProducto = (item.cantidad * item.precioSeleccionado)
+        const response = await axios.post('http://localhost:3001/nueva-compra', {
+          idUsuario: userData.idUsuario,
+          idProducto: item.idProducto,
+          cantidad_producto: item.cantidad,
+          idTalla: item.idTalla,
+          precio: precioProducto,
+        });
+  
+        console.log('Respuesta del servidor:', response.data);
+      }
+    } catch (error) {
+      console.error('Error al realizar las compras:', error);
+    }
+
   
     // Generar token con Openpay
     OpenPay.token.extractFormAndCreate(
@@ -68,7 +95,17 @@ const PaymentForm = ({total}) => {
       .then((data) => {
         console.log('Datos enviados al servidor:', paymentData);
         console.log("Pago procesado con éxito:", data);
-        alert("¡Pago realizado con éxito!");
+        //alert("¡Pago realizado con éxito!");
+        toast.success("Pago realizado con éxito", {
+          position: "top-center",
+          autoClose: 900,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate('/perfilUsuario');
       })
       .catch((error) => {
         console.log('Datos enviados al servidor:', paymentData);

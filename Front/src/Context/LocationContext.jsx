@@ -8,6 +8,10 @@ const LocationProvider = ({ children }) => {
   const [city, setCity] = useState(null);
   const [country, setCountry] = useState(null);
   const [colonia, setColonia] = useState(null);
+  const [latitude, setlatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+
 
   // Función para obtener información de ubicación basada en latitud y longitud
   function getReverseGeocode(latitude, longitude) {
@@ -21,13 +25,16 @@ const LocationProvider = ({ children }) => {
           const result = data.results[0];
           setLocation(result.formatted_address);
           console.log(result.formatted_address);
-          console.log(latitude);
-          console.log(longitude);
+          console.log("latitude", latitude);
+          console.log("longitude",longitude);
           // Extraer componentes adicionales
           const components = result.address_components;
           setCity(components.find(c => c.types.includes("locality"))?.long_name || "Ciudad desconocida");
           setCountry(components.find(c => c.types.includes("country"))?.long_name || "País desconocido");
           setColonia(components.find(c => c.types.includes("sublocality") || c.types.includes("neighborhood"))?.long_name || "Colonia desconocida");
+          setlatitude(latitude);
+          setLongitude(longitude);
+          
           console.log(components.find(c => c.types.includes("locality"))?.long_name || "Ciudad desconocida");
           console.log(components.find(c => c.types.includes("country"))?.long_name || "País desconocido");
           console.log(components.find(c => c.types.includes("sublocality") || c.types.includes("neighborhood"))?.long_name || "Colonia desconocida");
@@ -81,7 +88,7 @@ const LocationProvider = ({ children }) => {
   }, []);
 
   return (
-    <LocationContext.Provider value={{ location, city, country, colonia }}>
+    <LocationContext.Provider value={{ location, setLocation , city, country, colonia, latitude, longitude }}>
       {children}
     </LocationContext.Provider>
   );

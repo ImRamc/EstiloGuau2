@@ -26,7 +26,6 @@ import FormularioOferta from '../Pages/Ofertas/FormularioOfertas';
 import CatSub from '../Pages/Suscripcion/CatSub';
 import NewSub from '../Pages/Suscripcion/NewSub';
 import Suscripciones from '../Pages/Suscripcion/Suscripciones';
-/* import Suscripcion from '../Pages/Suscripcion/Suscripcion'; */
 import ResumenCompra from '../Pages/Pagos/ResumenCompra';
 import ResumenCompraDirecta from '../Pages/Pagos/ResumenCompraDirecta';
 import EditarSub from '../Pages/Suscripcion/EditarSub';
@@ -63,7 +62,6 @@ const RoutesComponent = () => {
         
         
         <Route path="/DetalleProducto/:idProducto" element={<DetalleProducto />} />
-        <Route path="/ResumenCompra1/:idProducto/:talla/:cantidad/:productosOferta/:productosPrecios" element={<ResumenCompra />} />
         <Route path="/ResumenCompra" element={<ResumenCompra />} />
         <Route path="/ResumenCompraDirecta" element={<ResumenCompraDirecta />} />
         {/* Rutas protegidas por rol */}
