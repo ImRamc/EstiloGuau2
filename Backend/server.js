@@ -39,7 +39,7 @@ async function initializeDBConnection() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '12345',
+      password: '',
       database: 'bdestiloguau'
     });
     console.log('Conexión a la base de datos establecida');
@@ -2364,16 +2364,15 @@ app.post("/subscribe", (req, res) => {
 });
 
 // Ruta para enviar notificaciones push
-app.post("/send-notification", (req, res) => {
+app.post("/Notificacion_Suscripcion_NoAprobada", (req, res) => {
   const notificationPayload = {
-    title: "Ya funciona we",
-    message: "Tilin"
-  };
+    title: "Error al activar la suscripción",
+    message: "Hubo un problema al activar tu suscripción. Por favor, intenta nuevamente más tarde."
 
+  };console.log(notificationPayload);
   const promises = subscriptions.map((subscription) =>
     webpush.sendNotification(subscription, JSON.stringify(notificationPayload))
   );
-
   Promise.all(promises)
     .then(() => res.status(200).json({ message: "Notificación enviada!" }))
     .catch((error) => {

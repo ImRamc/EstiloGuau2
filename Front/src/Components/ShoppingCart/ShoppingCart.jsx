@@ -75,7 +75,7 @@ export default function ShoppingCart({ isOpen, setIsOpen }) {
  {/* Resumen de compra */}
  {carrito.length === 0 ? (
            <Link to="/tienda">
-           <button className="w-full bg-black text-white mt-6 p-4 font-roboto font-bold rounded-lg hover:bg-slate-900">
+           <button className="w-full bg-black text-white mt-6 p-4 font-roboto font-bold rounded-lg hover:bg-slate-900" >
              Explorar artículos
              </button>
              </Link>
@@ -97,7 +97,7 @@ export default function ShoppingCart({ isOpen, setIsOpen }) {
                 {/* Botón de pago */}
                 <div className="">
                   <Link to={{ pathname: '/resumencompra', state: { carrito } }}>
-                    <button className="w-full bg-black text-white mt-6 p-4 font-roboto font-bold rounded-lg hover:bg-slate-900">
+                    <button className="w-full bg-black text-white mt-6 p-4 font-roboto font-bold rounded-lg hover:bg-slate-900" >
                       Proceder a pago
                     </button>
                   </Link>

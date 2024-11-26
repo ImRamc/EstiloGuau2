@@ -6,7 +6,8 @@ import './index.css'; // Asegúrate de que index.css existe si lo necesitas
 import RoutesComponent from './routes/RoutesComponent '; // Ajusta la ruta según tu estructura
 import { UserProvider } from './Context/UserContext'; // Ajusta la ruta según tu estructura
 import OfflineDemoComponent from './Components/OfflineDemoComponent/OfflineDemoComponent'; // Ajusta la ruta según tu estructura
-import NotificationSetup from "../PushNotification/PushNotificationSetup.jsx";
+import NotificationSetup from "../PushNotification/Page.jsx";
+import { Notifications } from 'react-push-notification';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
   return (
     <div className="App">
       <NotificationSetup />
+      <Notifications />
       <CartProvider>
         <LocationProvider>
           <UserProvider>
