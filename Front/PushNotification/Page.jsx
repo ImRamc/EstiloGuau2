@@ -61,11 +61,7 @@ function urlBase64ToUint8Array(base64String) {
     };
 
     return (
-      <div className="page">
-          <button onClick={buttonClick} className="button">
-           Hello world.
-          </button>
-      </div>
+      <div></div>
     );
   };
 
