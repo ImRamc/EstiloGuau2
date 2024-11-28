@@ -88,11 +88,11 @@ function Landing() {
           <div className="main-image flex justify-center">
           <div className="relative w-full">
           <div className="relative w-full">
-            <Link to="/tienda">
+          {/*}  <Link to="/tienda">
             <button className="absolute bottom-72 left-1/2 transform -translate-x-1/2 z-10 button-landing">
     <span className="button_top">Explorar productos</span>
   </button>
-            </Link>
+            </Link>*/}
  
 
   <div className="bg-white w-full">

@@ -6,7 +6,6 @@ import Navbar from '../../Components/Navbar/Navbar';
 import Footer from "../../Components/Footer/Footer";
 import Sidebar from '../../Components/Sidebar/Sidebar';
 
-
 const Suscripcion = () => {
   const [suscripciones, setSuscripciones] = useState([]);
   const { userData } = useContext(UserContext);
@@ -51,7 +50,8 @@ const Suscripcion = () => {
       return;
     }
 
-    navigate(`/registro-vendedor?subscriptionId=${suscripcion.id_sub}`);
+   //navigate(`/registro-vendedor?subscriptionId=${suscripcion.id_sub}`);
+   navigate(`/ResumenCompraSub`);
   };
 
   const openModal = (suscripcion) => {

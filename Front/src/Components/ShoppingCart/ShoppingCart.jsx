@@ -37,9 +37,10 @@ export default function ShoppingCart({ isOpen, setIsOpen }) {
               <div className="flex flex-col">
                 <div key={producto.idProducto + producto.talla} className="flex items-center justify-between p-4 bg-custom rounded-lg">
                   <img
-                    src={`http://localhost:3001/images/${producto.foto.split(",")[0]}`} // Muestra solo la primera imagen
-                    className="w-20 h-20 object-cover rounded-full"
-                  />
+  src={`http://localhost:3001/images/${producto?.foto?.split(",")[0] || "placeholder.jpg"}`} // Muestra la primera imagen o una de respaldo
+  alt={producto?.nombre || "Producto"} // Agrega un alt descriptivo
+  className="w-20 h-20 object-cover rounded-full"
+/>
                   <div className="flex-grow ml-4">
                     <h2 className="font-semibold text-base text-left">{producto.producto}</h2>
                     <p className="text-sm text-gray-500 text-left">Talla: {producto.talla}</p>

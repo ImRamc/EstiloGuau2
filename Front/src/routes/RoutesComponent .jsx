@@ -28,6 +28,7 @@ import NewSub from '../Pages/Suscripcion/NewSub';
 import Suscripciones from '../Pages/Suscripcion/Suscripciones';
 import ResumenCompra from '../Pages/Pagos/ResumenCompra';
 import ResumenCompraDirecta from '../Pages/Pagos/ResumenCompraDirecta';
+import ResumenCompraSub from '../Pages/Pagos/ResumenCompraSub';
 import EditarSub from '../Pages/Suscripcion/EditarSub';
 import RegistroVendedor from '../Pages/Vendedor/RegistroVendedor';
 import PerfilVendedor from '../Pages/PerfilUsuario/PerfilVendedor';
@@ -64,6 +65,7 @@ const RoutesComponent = () => {
         <Route path="/DetalleProducto/:idProducto" element={<DetalleProducto />} />
         <Route path="/ResumenCompra" element={<ResumenCompra />} />
         <Route path="/ResumenCompraDirecta" element={<ResumenCompraDirecta />} />
+        <Route path="/ResumenCompraSub" element={<ResumenCompraSub />} />
         {/* Rutas protegidas por rol */}
         <Route
           path="/Compras"
