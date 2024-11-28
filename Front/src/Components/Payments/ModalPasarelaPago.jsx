@@ -20,13 +20,13 @@ const ModalPasarelaPago = ({ isOpen, toggleModal, total, carrito }) => {
                 </Accordion.Content>
               </Accordion.Panel>
               <Accordion.Panel>
-                <Accordion.Title>Mercado pago</Accordion.Title>
+             {/**    <Accordion.Title>Mercado pago</Accordion.Title>
                 <Accordion.Content>
                   <p className="mb-2 text-gray-500 dark:text-gray-400">
                     Flowbite is first conceptualized and designed using the Figma software so everything you see in the
                     library has a design equivalent in our Figma file.
                   </p>
-                </Accordion.Content>
+                </Accordion.Content>*/}
               </Accordion.Panel>
             </Accordion>
           </section>

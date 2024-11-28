@@ -39,7 +39,7 @@ async function initializeDBConnection() {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '',
+      password: '12345',
       database: 'bdestiloguau'
     });
     console.log('Conexión a la base de datos establecida');
