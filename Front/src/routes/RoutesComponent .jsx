@@ -62,10 +62,10 @@ const RoutesComponent = () => {
         <Route path="/registro-vendedor" element={<RegistroVendedor />} />
         
         
-        <Route path="/DetalleProducto/:idProducto" element={<DetalleProducto />} />
+       {/*  <Route path="/DetalleProducto/:idProducto" element={<DetalleProducto />} />
         <Route path="/ResumenCompra" element={<ResumenCompra />} />
         <Route path="/ResumenCompraDirecta" element={<ResumenCompraDirecta />} />
-        <Route path="/ResumenCompraSub" element={<ResumenCompraSub />} />
+        <Route path="/ResumenCompraSub" element={<ResumenCompraSub />} />*/}
         {/* Rutas protegidas por rol */}
         <Route
           path="/Compras"
@@ -198,7 +198,7 @@ const RoutesComponent = () => {
         <Route
           path="/usuarios/editar/:id"
           element={
-            idRol && (idRol === 3 || idRol === 2) ? (
+            idRol && (idRol === 1 ||  idRol === 3 || idRol === 2) ? (
               <EditarUsuario />
             ) : (
               <Navigate to="/Login" />
@@ -303,19 +303,60 @@ const RoutesComponent = () => {
           }
         />
 
-         <Route
-          path="/perfil-vendedor"
-          element={
-            <ProtectedRoute>
-              <PerfilVendedor />
-            </ProtectedRoute>
-          }
-        />
-
+<Route
+  path="/DetalleProducto/:idProducto"
+  element={
+    idRol && (idRol === 1 || idRol === 2 || idRol === 3) ? (
+      <DetalleProducto />
+    ) : (
+      <Navigate to="/Login" />
+    )
+  }
+/>
+<Route
+  path="/ResumenCompra"
+  element={
+    idRol && (idRol === 1 || idRol === 2 || idRol === 3) ? (
+      <ResumenCompra />
+    ) : (
+      <Navigate to="/Login" />
+    )
+  }
+/>
+<Route
+  path="/ResumenCompraDirecta"
+  element={
+    idRol && (idRol === 1 || idRol === 2 || idRol === 3) ? (
+      <ResumenCompraDirecta />
+    ) : (
+      <Navigate to="/Login" />
+    )
+  }
+/>
+<Route
+  path="/ResumenCompraSub"
+  element={
+    idRol && (idRol === 1 || idRol === 2 || idRol === 3) ? (
+      <ResumenCompraSub />
+    ) : (
+      <Navigate to="/Login" />
+    )
+  }
+/>;
+<Route
+  path="/perfil-vendedor"
+  element={
+    idRol && (idRol === 1 || idRol === 2 || idRol === 3) ? (
+      <PerfilVendedor />
+    ) : (
+      <Navigate to="/Login" />
+    )
+  }
+/>;
         <Route
           path="/ver-todas-compras"
           element={
-            idRol && (idRol === 3 || idRol === 2) ? (
+            idRol && (idRol === 1 ||  idRol === 3 || idRol === 2) ? (
               <ProductoUser  />
             ) : (
               <Navigate to="/Login" />
