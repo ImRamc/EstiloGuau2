@@ -222,6 +222,7 @@ app.get('/comprasxus/:idUsuario', async (req, res) => {
        SELECT 
     producto.producto AS nombre_producto, 
     producto.descripcion, 
+    producto.marca, 
     inventario.precio,
     SUBSTRING_INDEX(producto.foto, ',', 1) AS primera_foto,
     tallas.Talla AS nombre_talla,  -- Cambia aquí para obtener el nombre de la talla

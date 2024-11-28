@@ -24,7 +24,7 @@ const ResumenCompra = () => {
   const descuentoTotal = carrito.reduce((acc, producto) => acc + ((Number(producto.precioOriginal) * Number(producto.cantidad) * Number(producto.productosOferta)) / 100), 0);
   let subtotal = carrito.reduce((acc, producto) => acc + (Number(producto.precioOriginal) * Number(producto.cantidad)), 0);
   let iva = 16;
-  iva = subtotal * (iva / 100);
+  iva = parseFloat((subtotal * (iva / 100)).toFixed(2));
   let total = subtotal - descuentoTotal;
   if(porcentaje != null){
     porcentaje = (total * (porcentaje / 100)).toFixed(2);

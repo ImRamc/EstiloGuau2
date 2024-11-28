@@ -33,8 +33,8 @@ const ResumenCompraSub = () => {
   const toggleModalCupones = () => setIsModalOpenCupon((prev) => !prev);
 
   let iva = 16;
-  iva = producto.precio_sub * (iva / 100);
-  let total = producto.precio_sub + iva;
+  iva = parseFloat((producto.precio_sub  * (iva / 100)).toFixed(2));
+  let total = parseFloat((producto.precio_sub  + iva).toFixed(2));
   // Lógica para obtener el producto
   useEffect(() => {
     const obtenerProducto = async () => {
