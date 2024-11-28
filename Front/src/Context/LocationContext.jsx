@@ -8,6 +8,9 @@ const LocationProvider = ({ children }) => {
   const [city, setCity] = useState(null);
   const [country, setCountry] = useState(null);
   const [colonia, setColonia] = useState(null);
+  const [calle, setCalle] = useState(null);
+  const [numero, setNumero] = useState(null);
+  const [CodigoPostal, setCodigoPostal] = useState(null);
   const [latitude, setlatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
 
@@ -30,14 +33,22 @@ const LocationProvider = ({ children }) => {
           // Extraer componentes adicionales
           const components = result.address_components;
           setCity(components.find(c => c.types.includes("locality"))?.long_name || "Ciudad desconocida");
+          setCalle(components.find(c => c.types.includes("route"))?.long_name || "Calle desconocida");
+          setNumero(components.find(c => c.types.includes("street_number"))?.long_name || "Número desconocido");
           setCountry(components.find(c => c.types.includes("country"))?.long_name || "País desconocido");
           setColonia(components.find(c => c.types.includes("sublocality") || c.types.includes("neighborhood"))?.long_name || "Colonia desconocida");
           setlatitude(latitude);
           setLongitude(longitude);
-          
+          setCodigoPostal(components.find((c) => c.types.includes("postal_code"))?.long_name || "Código postal desconocido");          
+
+
+          //console.log(components = result.address_components);
+          console.log(components.find(c => c.types.includes("street_number"))?.long_name || "Número desconocido");
+          console.log(components.find(c => c.types.includes("route"))?.long_name || "Calle desconocida");
           console.log(components.find(c => c.types.includes("locality"))?.long_name || "Ciudad desconocida");
           console.log(components.find(c => c.types.includes("country"))?.long_name || "País desconocido");
           console.log(components.find(c => c.types.includes("sublocality") || c.types.includes("neighborhood"))?.long_name || "Colonia desconocida");
+          console.log(components.find((c) => c.types.includes("postal_code"))?.long_name || "Código postal desconocido");
         } else {
           console.error("Error al obtener la dirección:", data.status);
         }
@@ -88,7 +99,7 @@ const LocationProvider = ({ children }) => {
   }, []);
 
   return (
-    <LocationContext.Provider value={{ location, setLocation , city, country, colonia, latitude, longitude }}>
+    <LocationContext.Provider value={{ location, setLocation , city, country, colonia, latitude, longitude, CodigoPostal, calle, numero }}>
       {children}
     </LocationContext.Provider>
   );
