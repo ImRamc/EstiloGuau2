@@ -50,8 +50,9 @@ const Suscripcion = () => {
       return;
     }
 
-   //navigate(`/registro-vendedor?subscriptionId=${suscripcion.id_sub}`);
-   navigate(`/ResumenCompraSub`);
+   navigate(`/registro-vendedor?subscriptionId=${suscripcion.id_sub}`);
+   //console.log(suscripcion.id_sub)
+   //navigate("/ResumenCompraSub", { state: { id_sub: suscripcion.id_sub } });
   };
 
   const openModal = (suscripcion) => {

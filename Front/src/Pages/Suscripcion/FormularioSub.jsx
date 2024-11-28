@@ -5,6 +5,7 @@ import Navbar from '../../Components/Navbar/Navbar';
 import Footer from "../../Components/Footer/Footer";
 import Sidebar from '../../Components/Sidebar/Sidebar';
 
+
 const FormularioSub = () => {
 
   const [cupon, setCupon] = useState({

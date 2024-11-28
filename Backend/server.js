@@ -222,6 +222,7 @@ app.get('/comprasxus/:idUsuario', async (req, res) => {
        SELECT 
     producto.producto AS nombre_producto, 
     producto.descripcion, 
+    producto.marca, 
     inventario.precio,
     SUBSTRING_INDEX(producto.foto, ',', 1) AS primera_foto,
     tallas.Talla AS nombre_talla,  -- Cambia aquí para obtener el nombre de la talla
@@ -2046,12 +2047,24 @@ app.post('/registro-vendedor', async (req, res) => {
     // Inserta el vendedor
     const insertQuery = 'INSERT INTO vendedor (nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fecha_registro, latitud, longitud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
     const [insertResult] = await connection.execute(insertQuery, [nom_empresa, direccion, telefono, pais, estado, codigo_postal, rfc, idUsuario, idRol, id_sub, fechaRegistro, latitud, longitud]);
+    if (insertResult.affectedRows > 0) {
+      const fechaInicio = new Date();  // Fecha de inicio actual
+      const fechaFin = new Date(fechaInicio);  // Copiar fechaInicio
+      fechaFin.setDate(fechaFin.getDate() + 30); // Si la fecha de fin es opcional, puede ser null
 
-    // Actualiza el idRol del usuario, siempre como 2
-    const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
-    await connection.execute(updateQuery, [idRol, idUsuario]);
+      // Inserta en la tabla usuarioxsub
+      const insertUsuarioXSubQuery = 'INSERT INTO usuarioxsub (idUsuario, id_sub, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)';
+      await connection.execute(insertUsuarioXSubQuery, [idUsuario, id_sub, fechaInicio, fechaFin]);
+      
+      // Actualiza el idRol del usuario, siempre como 2
+      const updateQuery = 'UPDATE usuario SET idRol = ? WHERE idUsuario = ?';
+      await connection.execute(updateQuery, [idRol, idUsuario]);
 
-    res.status(201).send('Vendedor registrado y rol actualizado.');
+      res.status(201).send('Vendedor registrado y rol actualizado.');
+    }  else {
+      res.status(500).send('Error al registrar el vendedor.');
+    }
+
   } catch (err) {
     console.error('Error al registrar el vendedor:', err.message);
     res.status(500).send('Error al registrar el vendedor o actualizar el rol del usuario.');

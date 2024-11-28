@@ -12,7 +12,7 @@ import addNotification from 'react-push-notification';
 
 
 
-const PaymentForm = ({ total, carrito }) => {
+const PaymentFormSub = ({ total, carrito }) => {
   const { userData } = useContext(UserContext);
   const { idProducto, talla, cantidad, productosPrecios } = useParams();
   const [cardHolderName, setCardHolderName] = useState("");
@@ -33,20 +33,8 @@ const PaymentForm = ({ total, carrito }) => {
   const handlePayment = async (e) => {
     e.preventDefault();
     try {
-      for (const item of carrito) {
-        console.log("Esto es el producto que se está procesando:", item);
-        const precioProducto = (item.cantidad * item.precioSeleccionado)
-        const response = await axios.post('http://localhost:3001/nueva-compra', {
-          idUsuario: userData.idUsuario,
-          idProducto: item.idProducto,
-          cantidad_producto: item.cantidad,
-          idTalla: item.idTalla,
-          precio: precioProducto,
-        });
+      navigate(`/registro-vendedor?subscriptionId=${suscripcion.id_sub}`);
 
-        console.log('Respuesta del servidor:', response.data);
-        
-      }
     } catch (error) {
       console.error('Error al realizar las compras:', error);
     }
@@ -74,7 +62,6 @@ const PaymentForm = ({ total, carrito }) => {
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
     const apiUrl = "http://localhost:3001/api/process-payment";
     console.log("esto es el token antes de mandarlo al back", tokenId)
-
     const paymentData = {
       token_id: tokenId, // Token de Openpay
       device_session_id: deviceSessionId, // ID de sesión del dispositivo
@@ -98,19 +85,9 @@ const PaymentForm = ({ total, carrito }) => {
       .then((data) => {
         console.log('Datos enviados al servidor:', paymentData);
         console.log("Pago procesado con éxito:", data);
-        //alert("¡Pago realizado con éxito!");
-        //  toast.success("Pago realizado con éxito", {
-         // position: "top-center",
-          //autoClose: 900,
-          //hideProgressBar: true,
-          //closeOnClick: true,
-          //pauseOnHover: true,
-          //draggable: true,
-          //progress: undefined,
-        //});
         addNotification({
           title: 'Pago realizado con éxito',
-         // message: `Adquiriste: ${purchasedItems}`,
+          message: `Adquiriste: ${purchasedItems}`,
           duration: 10000, //optional, default: 5000,
           icon: '/images/logo.png',
           vibrate: 10,
@@ -312,4 +289,4 @@ const PaymentForm = ({ total, carrito }) => {
   );
 };
 
-export default PaymentForm;
+export default PaymentFormSub;
