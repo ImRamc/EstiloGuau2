@@ -9,11 +9,14 @@ import { UserContext } from '../../Context/UserContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import addNotification from 'react-push-notification';
+import { CartContext } from '../../Context/CartContext';
+
 
 
 
 const PaymentForm = ({ total, carrito }) => {
   const { userData } = useContext(UserContext);
+  const { vaciarCarrito } = useContext(CartContext);
   const { idProducto, talla, cantidad, productosPrecios } = useParams();
   const [cardHolderName, setCardHolderName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -116,6 +119,7 @@ const PaymentForm = ({ total, carrito }) => {
           vibrate: 10,
           native: true // when using native, your OS will handle theming.
       });
+      vaciarCarrito();
         navigate('/perfilUsuario');
       })
       .catch((error) => {
