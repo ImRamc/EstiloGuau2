@@ -9,9 +9,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         runtimeCaching: [
-          // Cache de la landing page
+          // Cache para la landing page
           {
-            urlPattern: /^http:\/\/localhost:4173\/?$/, // Landing
+            urlPattern: /^\/?$/, // Se ajusta para producción
             handler: 'NetworkFirst',
             options: {
               cacheName: 'landing-page-cache',
@@ -21,9 +21,9 @@ export default defineConfig({
               },
             },
           },
-          // Cache de la tienda
+          // Cache para la página de la tienda
           {
-            urlPattern: /^http:\/\/localhost:4173\/Tienda$/, // Tienda
+            urlPattern: /^\/Tienda$/, // Ruta relativa
             handler: 'NetworkFirst',
             options: {
               cacheName: 'tienda-page-cache',
@@ -45,12 +45,12 @@ export default defineConfig({
               },
             },
           },
-          // Rutas generales sin cache para rutas bloqueadas
+          // Rutas generales para contenido offline
           {
-            urlPattern: /^(?!.*(\/Suscripciones|\/Uscupones|\/Login|\/Registro)).*$/,
+            urlPattern: /^\/(?!Suscripciones|Uscupones|Login|Registro).*$/, // Rutas permitidas
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'valid-pages-cache',
+              cacheName: 'general-pages-cache',
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 30 * 24 * 60 * 60, // 30 días
@@ -58,23 +58,22 @@ export default defineConfig({
             },
           },
         ],
-        // Eliminar fallback para offline.html
-        navigateFallback: 'index.html', // Ya no usamos una página de fallback
+        navigateFallback: '/index.html', // Redirección a index.html para rutas no encontradas
         navigateFallbackDenylist: [
           /^\/Suscripciones/,
           /^\/Uscupones/,
           /^\/Login/,
           /^\/Registro/,
-        ], // Rutas bloqueadas
-        navigationPreload: true,
+        ], // Bloqueo de rutas específicas
+        navigationPreload: true, // Habilita precarga para mejorar tiempos de respuesta
       },
       devOptions: {
-        enabled: true,
+        enabled: true, // Activa en modo desarrollo
       },
       manifest: {
-        name: 'Mi PWA',
-        short_name: 'PWA',
-        description: 'PWA con soporte offline para landing y tienda',
+        name: 'Estilo Guau',
+        short_name: 'Guau',
+        description: 'PWA con soporte offline para Estilo Guau',
         theme_color: '#ffffff',
         icons: [
           {
@@ -91,4 +90,11 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    outDir: 'dist',
+  },
+  server: {
+    // Habilita redirección de todas las rutas a index.html en modo dev
+    hmr: true,
+  },
 });
