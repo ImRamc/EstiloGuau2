@@ -6,8 +6,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import './Navbar.css';
 import { Dropdown, Navbar, Tabs  } from "flowbite-react";
 import ShoppingCart from '../ShoppingCart/ShoppingCart';
-import Logo from "../../img/Logo.png";
-
+import Logo from "../../img/logo.png";
 
 
 const Component = () => {
