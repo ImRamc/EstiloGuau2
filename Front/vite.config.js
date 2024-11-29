@@ -77,12 +77,12 @@ export default defineConfig({
         theme_color: '#ffffff',
         icons: [
           {
-            src: 'icon-192x192.png',
+            src: '/icon-192x192.png', // Asegúrate de que los íconos estén en la carpeta public
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'icon-512x512.png',
+            src: '/icon-512x512.png', // Asegúrate de que los íconos estén en la carpeta public
             sizes: '512x512',
             type: 'image/png',
           },
@@ -94,7 +94,6 @@ export default defineConfig({
     outDir: 'dist',
   },
   server: {
-    // Habilita redirección de todas las rutas a index.html en modo dev
-    hmr: true,
+    hmr: true, // Habilita hot module reload para el desarrollo
   },
 });
