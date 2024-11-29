@@ -62,7 +62,7 @@ const PaymentFormSub = ({ total, carrito }) => {
   };
 
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
-    const apiUrl = "http://localhost:3001/api/process-payment";
+    const apiUrl = "https://estilo-guau2-bak.vercel.app/api/process-payment";
     console.log("esto es el token antes de mandarlo al back", tokenId)
     const paymentData = {
       token_id: tokenId, // Token de Openpay
@@ -87,14 +87,24 @@ const PaymentFormSub = ({ total, carrito }) => {
       .then((data) => {
         console.log('Datos enviados al servidor:', paymentData);
         console.log("Pago procesado con éxito:", data);
-        addNotification({
+
+        toast.success("Pago realizado con éxito", {
+          position: "top-center",
+          autoClose: 900,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        /* addNotification({
           title: 'Pago realizado con éxito',
           message: `Adquiriste: ${purchasedItems}`,
           duration: 10000, //optional, default: 5000,
           icon: '/images/logo.png',
           vibrate: 10,
           native: true // when using native, your OS will handle theming.        
-      });
+      }); */
       vaciarCarrito();
         navigate('/perfilUsuario');
       })

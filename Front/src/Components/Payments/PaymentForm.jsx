@@ -39,7 +39,7 @@ const PaymentForm = ({ total, carrito }) => {
       for (const item of carrito) {
         console.log("Esto es el producto que se está procesando:", item);
         const precioProducto = (item.cantidad * item.precioSeleccionado)
-        const response = await axios.post('http://localhost:3001/nueva-compra', {
+        const response = await axios.post('https://estilo-guau2-bak.vercel.app/nueva-compra', {
           idUsuario: userData.idUsuario,
           idProducto: item.idProducto,
           cantidad_producto: item.cantidad,
@@ -75,7 +75,7 @@ const PaymentForm = ({ total, carrito }) => {
   };
 
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
-    const apiUrl = "http://localhost:3001/api/process-payment";
+    const apiUrl = "https://estilo-guau2-bak.vercel.app/api/process-payment";
     console.log("esto es el token antes de mandarlo al back", tokenId)
 
     const paymentData = {
@@ -101,24 +101,24 @@ const PaymentForm = ({ total, carrito }) => {
       .then((data) => {
         console.log('Datos enviados al servidor:', paymentData);
         console.log("Pago procesado con éxito:", data);
-        //alert("¡Pago realizado con éxito!");
-        //  toast.success("Pago realizado con éxito", {
-         // position: "top-center",
-          //autoClose: 900,
-          //hideProgressBar: true,
-          //closeOnClick: true,
-          //pauseOnHover: true,
-          //draggable: true,
-          //progress: undefined,
-        //});
-        addNotification({
+        alert("¡Pago realizado con éxito!");
+          toast.success("Pago realizado con éxito", {
+          position: "top-center",
+          autoClose: 900,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        /* addNotification({
           title: 'Pago realizado con éxito',
-         // message: `Adquiriste: ${purchasedItems}`,
+          message: `Adquiriste: ${purchasedItems}`,
           duration: 10000, //optional, default: 5000,
           icon: '/images/logo.png',
           vibrate: 10,
           native: true // when using native, your OS will handle theming.
-      });
+      }); */
       vaciarCarrito();
         navigate('/perfilUsuario');
       })
