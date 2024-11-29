@@ -1,4 +1,3 @@
-//#region Conexiòn
 const express = require('express');
 const mysql = require('mysql2/promise');
 const webpush = require("web-push");
@@ -9,9 +8,9 @@ const path = require('path');
 const fs = require('fs');
 const moment = require('moment');
 const bodyParser = require('body-parser');
-const router = express.Router();
+//const router = express.Router();
 
-dotenv.config(); // Carga las variables de entorno
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -22,19 +21,43 @@ const privateVapidKey = "V1DtSaOcrSuW-l7D7YWc1kTYW_-ioGI0iw9qw5jcROc";
 
 // Middleware
 app.use(cors());
-// Middleware para parsear JSON
+// Usar el enrutador de pagos *se toma primero el de arriba
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-// Usar el enrutador de pagos
-// Middleware para parsear JSON
-app.use(bodyParser.json());
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: ["https://estilo-guau2.vercel.app/", "http://localhost:5173"] }));
+/* app.use(cors({ origin: "http://localhost:5173" })); esto es del original*/
 
 let connection;
 
 // Conexión a la base de datos
 async function initializeDBConnection() {
+  const host = process.env.DB_HOST || 'localhost';  // Si no está en .env, por defecto será localhost
+  const user = process.env.DB_USER || 'root';  // Usuario de la base de datos
+  const password = process.env.DB_PASSWORD || '';  // Contraseña de la base de datos
+  const database = process.env.DB_NAME || 'bdestiloguau';  // Nombre de la base de datos
+  const port = process.env.DB_PORT || 3306;  // Puerto (por defecto 3306 para MySQL)
+
+  try {
+    connection = await mysql.createConnection({
+      host, user, password, database, port
+    });
+    console.log('Conexión a la base de datos establecida');
+  } catch (error) {
+    console.error('Error al conectar con la base de datos:', error);
+    process.exit(1); // Termina el proceso si no se puede conectar a la base de datos
+  }
+}
+
+// Llama la función de conexión y luego inicia el servidor
+initializeDBConnection().then(() => {
+  app.listen(port, () => {
+    console.log(`Servidor en funcionamiento en el puerto ${port}`);
+  });
+});
+
+// original:
+/* async function initializeDBConnection() {
   try {
     connection = await mysql.createConnection({
       host: 'localhost',
@@ -49,6 +72,8 @@ async function initializeDBConnection() {
   }
 }
 initializeDBConnection();
+ */
+
 
 // Configuración de Multer
 const storage = multer.diskStorage({
@@ -2501,6 +2526,14 @@ console.log("productos-filtrar", req.body)
 
 
 
-app.listen(3001, () => {
+/*
+//original:
+ app.listen(3001, () => {
   console.log(`Server is running on port: ${port}`);
 });
+ */
+
+// Exporta la aplicación para Vercel
+module.exports = (req, res) => {
+  app(req, res);
+};
