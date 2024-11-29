@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { UserContext } from '../../Context/UserContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import addNotification from 'react-push-notification';
+//import addNotification from 'react-push-notification';
 import { CartContext } from '../../Context/CartContext';
 
 
