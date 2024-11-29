@@ -18,7 +18,7 @@ export const Registro = () =>{
    }
    else 
    {
-    Axios.post("http://localhost:3001/registro",{
+    Axios.post("https://estilo-guau2-bak.vercel.app/registro",{
       nombre:nombres,
       apellido:apellidos,
       email:correo,

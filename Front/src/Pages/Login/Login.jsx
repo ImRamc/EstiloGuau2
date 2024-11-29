@@ -18,7 +18,7 @@ const Login = () => {
         alert("Todos los campos son obligatorios");
      }
      else{
-        Axios.post("http://localhost:3001/Login",{
+        Axios.post("https://estilo-guau2-bak.vercel.app/Login",{
             email:correo,
             password:password
            }).then(response =>{

@@ -91,7 +91,7 @@ function Tienda() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:3001/productos');
+        const response = await fetch('https://estilo-guau2-bak.vercel.app/productos');
         const data = await response.json();
         const updatedData = data.map(product => {
           const precioConDescuento = product.porcentaje_descuento
@@ -112,10 +112,10 @@ function Tienda() {
     const fetchFilters = async () => {
       try {
         const [temporadasResponse, tallasResponse, ofertaResponse, tiendaResponse] = await Promise.all([
-          fetch('http://localhost:3001/temporada'),
-          fetch('http://localhost:3001/tallas'),
-          fetch('http://localhost:3001/all-ofertas'),
-          fetch('http://localhost:3001/all-vendedor'),
+          fetch('https://estilo-guau2-bak.vercel.app/temporada'),
+          fetch('https://estilo-guau2-bak.vercel.app/tallas'),
+          fetch('https://estilo-guau2-bak.vercel.app/all-ofertas'),
+          fetch('https://estilo-guau2-bak.vercel.app/all-vendedor'),
         ]);
 
         const temporadasData = await temporadasResponse.json();
@@ -142,7 +142,7 @@ function Tienda() {
     const fetchFavorites = async () => {
       if (idUsuario) {
         try {
-          const response = await axios.get(`http://localhost:3001/favoritos/${idUsuario}`);
+          const response = await axios.get(`https://estilo-guau2-bak.vercel.app/favoritos/${idUsuario}`);
           const favoritos = response.data.map(fav => fav.idProducto);
           setFavorites(favoritos);
         } catch (error) {
@@ -241,10 +241,10 @@ function Tienda() {
     const esFavorito = favoritos.some(favorito => favorito.id === idProducto);
     try {
       if (esFavorito) {
-        await axios.delete(`http://localhost:3001/favoritosdelete/${idUsuario}/${idProducto}`);
+        await axios.delete(`https://estilo-guau2-bak.vercel.app/favoritosdelete/${idUsuario}/${idProducto}`);
         setFavoritos(favoritos.filter(favorito => favorito.id !== idProducto));
       } else {
-        await axios.post('http://localhost:3001/guardar-favorito', { idProducto, idUsuario });
+        await axios.post('https://estilo-guau2-bak.vercel.app/guardar-favorito', { idProducto, idUsuario });
         setFavoritos([...favoritos, { id: idProducto }]);
       }
       setAgregado(true);
@@ -279,7 +279,7 @@ function Tienda() {
     if (location) {
       console.log("Ubicación:", location);
       try {
-        const response = await axios.post("http://localhost:3001/api/tiendas/cercanas", {
+        const response = await axios.post("https://estilo-guau2-bak.vercel.app/api/tiendas/cercanas", {
           latitud: latitude,
           longitud: longitude,
           radio: filters.distancia, // Radio en km
@@ -636,7 +636,7 @@ function Tienda() {
                   </button>
                 </div>
                 <img
-                  src={`http://localhost:3001/images/${producto.primera_foto}`}
+                  src={`https://estilo-guau2-bak.vercel.app/images/${producto.primera_foto}`}
                   alt="Producto"
                   className="w-64 h-64 object-cover mx-auto mb-6"
                 />
