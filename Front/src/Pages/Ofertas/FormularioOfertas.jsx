@@ -36,7 +36,7 @@ const FormularioOferta = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3001/ofertas-nuevo', oferta);
+      const response = await axios.post('https://estilo-guau2-bak.vercel.app/ofertas-nuevo', oferta);
       if (response.status === 201) {
         setAgregado(true);
         setTimeout(() => {

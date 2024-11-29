@@ -28,7 +28,7 @@ const EditarProducto = () => {
   useEffect(() => {
     const obtenerOfertas = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/all-ofertas');
+        const response = await axios.get('https://estilo-guau2-bak.vercel.app/all-ofertas');
         setOfertas(response.data);
       } catch (error) {
         console.error('Error al obtener las ofertas:', error);
@@ -37,7 +37,7 @@ const EditarProducto = () => {
 
     const obtenerTallas = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/tallas');
+        const response = await axios.get('https://estilo-guau2-bak.vercel.app/tallas');
         setTallas(response.data);
       } catch (error) {
         console.error('Error al obtener las tallas:', error);
@@ -46,7 +46,7 @@ const EditarProducto = () => {
 
     const obtenerProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/productos/${id}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/productos/${id}`);
         //console.log(response.data);
         setProducto(response.data);
         const fotos = response.data.foto.split(',');
@@ -104,7 +104,7 @@ const EditarProducto = () => {
     formData.append('registros', JSON.stringify(registros));
 
     try {
-        const response = await axios.put(`http://localhost:3001/registros/${id}`, formData, {
+        const response = await axios.put(`https://estilo-guau2-bak.vercel.app/registros/${id}`, formData, {
         
           headers: {
             'Content-Type': 'multipart/form-data'
@@ -118,7 +118,7 @@ const EditarProducto = () => {
     }
 
     try {
-      const responseInv = await axios.put(`http://localhost:3001/inventario/${id}`, formData, {
+      const responseInv = await axios.put(`https://estilo-guau2-bak.vercel.app/inventario/${id}`, formData, {
       
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -146,7 +146,7 @@ const EditarProducto = () => {
 
     try {
       
-      await axios.put(`http://localhost:3001/productos/${id}`, formData, {
+      await axios.put(`https://estilo-guau2-bak.vercel.app/productos/${id}`, formData, {
         
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -168,7 +168,7 @@ const EditarProducto = () => {
   useEffect(() => {
     const obtenerRegistro = async () => {
       try {
-          const response = await axios.get(`http://localhost:3001/registros/${id}`);
+          const response = await axios.get(`https://estilo-guau2-bak.vercel.app/registros/${id}`);
           //console.log('Datos obtenidos:', response.data); // Verifica los datos
           setRegistros(response.data);
       } catch (error) {
@@ -273,7 +273,7 @@ if (id) {
                 currentImage.map((key, index) => (
                   <img
                     key={index}
-                    src={`http://localhost:3001/images/${key}`}
+                    src={`https://estilo-guau2-bak.vercel.app/images/${key}`}
                     alt={`Foto ${index + 1}`}
                     className="w-32 h-32 object-cover mr-4 mb-4"
                   />

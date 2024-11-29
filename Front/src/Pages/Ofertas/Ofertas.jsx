@@ -14,7 +14,7 @@ const Ofertas = () => {
 
   const obtenerOfertas = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/ofertas');
+      const response = await axios.get('https://estilo-guau2-bak.vercel.app/ofertas');
       setOfertas(response.data);
     } catch (error) {
       console.error('Error al obtener las ofertas:', error);
@@ -23,7 +23,7 @@ const Ofertas = () => {
 
   const eliminarOferta = async (idOferta) => {
     try {
-      await axios.delete(`http://localhost:3001/ofertas/${idOferta}`);
+      await axios.delete(`https://estilo-guau2-bak.vercel.app/ofertas/${idOferta}`);
       setOfertas(ofertas.filter(oferta => oferta.idOferta !== idOferta));
     } catch (error) {
       console.error(`Error al eliminar la oferta con ID ${idOferta}:`, error);

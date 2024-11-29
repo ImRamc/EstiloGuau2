@@ -17,7 +17,7 @@ const EditarVendedor = () => {
   useEffect(() => {
     const fetchVendedor = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/vendedor/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/vendedor/${userData.idUsuario}`);
         console.log(response.data)
         setVendedor(response.data);
       } catch (error) {
@@ -43,7 +43,7 @@ const EditarVendedor = () => {
 
   const confirmUpdate = async () => {
     try {
-      await Axios.put(`http://localhost:3001/vendedor/${idVendedor}`, vendedor);
+      await Axios.put(`https://estilo-guau2-bak.vercel.app/vendedor/${idVendedor}`, vendedor);
       setAgregado(true);
       navigate(`/perfil-vendedor`);
     } catch (error) {

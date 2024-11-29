@@ -20,7 +20,7 @@ const FormularioUsuario = () => {
 
   const obtenerRoles = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/all-rol');
+      const response = await axios.get('https://estilo-guau2-bak.vercel.app/all-rol');
       setRoles(response.data);
       //console.log(response.data)
     } catch (error) {
@@ -62,7 +62,7 @@ const FormularioUsuario = () => {
       formData.append('password', usuario.password);
       formData.append('fecha_creacion', usuario.fecha_creacion);
      
-      const response = await axios.post('http://localhost:3001/new-user', formData, {
+      const response = await axios.post('https://estilo-guau2-bak.vercel.app/new-user', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

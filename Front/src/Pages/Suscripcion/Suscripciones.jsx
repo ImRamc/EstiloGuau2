@@ -37,7 +37,7 @@ const Suscripcion = () => {
     }
     
     try {
-      const response = await axios.get(`http://localhost:3001/empresa/verificar/${idUsuario}`);
+      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/empresa/verificar/${idUsuario}`);
       if (response.data.existe) {
         
        alert(`Ya tienes una empresa asociada: ${response.data.vendedor.nom_empresa}`);

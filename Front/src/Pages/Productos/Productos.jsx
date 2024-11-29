@@ -28,7 +28,7 @@ const Productos = () => {
 
   const obtenerProductos = async (ruta) => {
     try {
-      const response = await axios.get(`http://localhost:3001${ruta}`);
+      const response = await axios.get(`https://estilo-guau2-bak.vercel.app${ruta}`);
       setProductos(response.data);
       console.log('Productos recibidos:', response.data);
       //console.log(productos)
@@ -39,7 +39,7 @@ const Productos = () => {
 
   const eliminarProducto = async (idProducto) => {
     try {
-      await axios.delete(`http://localhost:3001/productos/${idProducto}`);
+      await axios.delete(`https://estilo-guau2-bak.vercel.app/productos/${idProducto}`);
       setProductos(productos.filter(producto => producto.idProducto !== idProducto));
     } catch (error) {
       console.error(`Error al eliminar el producto con ID ${idProducto}:`, error);
@@ -93,7 +93,7 @@ const Productos = () => {
                 <td className="py-2 px-2 text-center border border-gray-300">
                   {producto.foto && (
                     <img 
-                      src={`http://localhost:3001/images/${producto.foto.split(',')[0]}`} // Muestra solo el primer archivo
+                      src={`https://estilo-guau2-bak.vercel.app/images/${producto.foto.split(',')[0]}`} // Muestra solo el primer archivo
                       alt="Producto" 
                       className="w-20 h-20 object-cover rounded mx-auto" 
                     />

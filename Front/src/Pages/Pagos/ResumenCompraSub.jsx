@@ -39,7 +39,7 @@ const ResumenCompraSub = () => {
   useEffect(() => {
     const obtenerProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/suscripcion/${id_sub}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/api/suscripcion/${id_sub}`);
         console.log("Respuesta de la API:", response.data);
         const producto = response.data;
         if (producto.porcentaje_descuento !== 0) {

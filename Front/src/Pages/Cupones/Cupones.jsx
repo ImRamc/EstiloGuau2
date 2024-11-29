@@ -17,9 +17,9 @@ const Cupones = () => {
       try {
         let url;
         if (idRol === 2) {
-          url = `http://localhost:3001/cuponesxus/${idUsuario}`; // Ruta para idRol 2
+          url = `https://estilo-guau2-bak.vercel.app/cuponesxus/${idUsuario}`; // Ruta para idRol 2
         } else if (idRol === 3) {
-          url = `http://localhost:3001/cupones`; // Ruta diferente para idRol 3
+          url = `https://estilo-guau2-bak.vercel.app/cupones`; // Ruta diferente para idRol 3
         }
 
         const response = await axios.get(url);
@@ -35,7 +35,7 @@ const Cupones = () => {
   // Función para eliminar cupon
   const eliminarCupon = async (idCupon) => {
     try {
-      await axios.delete(`http://localhost:3001/cupones/${idCupon}`);
+      await axios.delete(`https://estilo-guau2-bak.vercel.app/cupones/${idCupon}`);
       setCupones(cupones.filter(cupon => cupon.idCupon !== idCupon));
     } catch (error) {
       console.error(`Error al eliminar el cupón con ID ${idCupon}:`, error);

@@ -21,7 +21,7 @@ const EditarSub = () => {
   useEffect(() => {
     const obtenerSuscripcion = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/suscripcion/${id}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/api/suscripcion/${id}`);
         setSuscripcion({
           ...response.data,
           beneficios: Array.isArray(response.data.beneficios) ? response.data.beneficios.join(', ') : ''
@@ -50,12 +50,12 @@ const EditarSub = () => {
       const beneficiosArray = suscripcion.beneficios.split(',').map(beneficio => beneficio.trim()).filter(beneficio => beneficio);
       const suscripcionActualizada = {
         ...suscripcion,
-        beneficios: beneficiosArray // Asegúrate de enviar un array
+        beneficios: beneficiosArray
       };
 
-      console.log('Datos a enviar:', suscripcionActualizada); // Para depuración
+      console.log('Datos a enviar:', suscripcionActualizada);
 
-      const response = await axios.put(`http://localhost:3001/api/suscripcion/${id}`, suscripcionActualizada);
+      const response = await axios.put(`https://estilo-guau2-bak.vercel.app/api/suscripcion/${id}`, suscripcionActualizada);
       if (response.status === 200) {
         setMessage('Suscripción actualizada exitosamente.');
         setTimeout(() => navigate('/suscripciones'), 2000);

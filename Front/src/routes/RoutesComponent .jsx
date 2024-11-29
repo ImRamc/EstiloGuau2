@@ -1,4 +1,3 @@
-//#region IMPORTS
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { UserContext } from '../Context/UserContext'; // Asegúrate de importar UserContext correctamente
@@ -40,7 +39,6 @@ import DashboardCupones from '../Pages/DashboardCupones/DashboardCupones';
 import DashboardSuscripcion from '../Pages/DashboardSuscripcion/DashboardSuscripcion';
 import SupersetData from '../Pages/DashboardSuperset/SupersetData';
 import Cookies from "../Components/Politics/cookies";
-//#endregion
 
 const RoutesComponent = () => {
   const { userData } = useContext(UserContext);

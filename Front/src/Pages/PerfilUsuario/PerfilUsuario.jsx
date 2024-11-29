@@ -21,7 +21,7 @@ const PerfilUsuario = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/usuarioget/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/usuarioget/${userData.idUsuario}`);
         setUsuario(response.data);
       } catch (error) {
         console.error('Error al obtener el perfil del usuario:', error);
@@ -34,7 +34,7 @@ const PerfilUsuario = () => {
   useEffect(() => {
     const fetchCompras = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/comprasxus/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/comprasxus/${userData.idUsuario}`);
         setCompras(response.data);
       } catch (error) {
         console.error('Error al obtener las compras:', error);
@@ -47,7 +47,7 @@ const PerfilUsuario = () => {
   useEffect(() => {
     const fetchSuscripcionesActivas = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/suscripciones-activas/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/suscripciones-activas/${userData.idUsuario}`);
         setSuscripcionesActivas(response.data.totalSuscripciones);
       } catch (error) {
         console.error('Error al obtener suscripciones activas:', error);
@@ -56,7 +56,7 @@ const PerfilUsuario = () => {
 
     const fetchPuntosFidelidad = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/puntos-fidelidad/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/puntos-fidelidad/${userData.idUsuario}`);
         setPuntosFidelidad(response.data.totalPuntos);
       } catch (error) {
         console.error('Error al obtener puntos de fidelidad:', error);
@@ -94,7 +94,7 @@ const PerfilUsuario = () => {
         <div className=" bg-gray-100">
   <div className="bg-white flex items-center justify-center w-full shadow-lg rounded-lg mb-8 ">
    <div className="flex justify-center items-center">
-   <img src={`http://localhost:3001/images/${usuario.foto}`} alt=""
+   <img src={`https://estilo-guau2-bak.vercel.app/images/${usuario.foto}`} alt=""
       className="rounded-full h-auto w-64 object-cover mr-6" />
     <div className="flex-grow p-20">
       <h2 className="text-4xl font-bold">{usuario.nombre} {usuario.apellido}</h2>
@@ -139,7 +139,7 @@ const PerfilUsuario = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {comprasRecientes.map(compra => (
                 <div key={compra.idCompra} className="bg-white shadow-lg rounded-lg p-4 flex flex-col">
-                  <img src={`http://localhost:3001/images/${compra.primera_foto}`} className="h-24 w-24 rounded-full mb-4 mx-auto" alt="Producto" />
+                  <img src={`https://estilo-guau2-bak.vercel.app/images/${compra.primera_foto}`} className="h-24 w-24 rounded-full mb-4 mx-auto" alt="Producto" />
                   <h3 className="font-bold"> <span className="font-normal">{compra.nombre_producto}
                     </span> </h3>
                   <p className='font-bold'>Precio: <span className="font-normal">${compra.precio}</span> </p>
@@ -172,7 +172,7 @@ const PerfilUsuario = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white rounded-lg p-6 shadow-lg w-1/2">
               <h2 className="text-2xl font-bold mb-4">{selectedProduct?.producto}</h2>
-              <img src={`http://localhost:3001/images/${selectedProduct?.foto}`} alt={selectedProduct?.producto} className="w-full h-48 object-cover mb-4" />
+              <img src={`https://estilo-guau2-bak.vercel.app/images/${selectedProduct?.foto}`} alt={selectedProduct?.producto} className="w-full h-48 object-cover mb-4" />
               <p className="text-lg"><strong>Descripción:</strong> {selectedProduct?.descripcion}</p>
               <p className="text-lg"><strong>Precio:</strong> ${selectedProduct?.precio}</p>
               <p className="text-lg"><strong>Talla:</strong> {selectedProduct?.talla}</p>

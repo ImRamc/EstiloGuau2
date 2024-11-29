@@ -15,7 +15,7 @@ const ProductoUser = () => {
   useEffect(() => {
     const fetchCompras = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/todas-compras/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/todas-compras/${userData.idUsuario}`);
         setCompras(response.data);
       } catch (error) {
         console.error('Error al obtener todas las compras:', error);
@@ -50,7 +50,7 @@ const ProductoUser = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {compras.map(compra => (
               <div key={compra.idCompra} className="bg-white shadow-lg rounded-lg p-4 flex flex-col">
-                <img src={`http://localhost:3001/images/${compra.primera_foto}`} className="h-24 w-24 rounded-full mb-4 mx-auto" alt="Producto" />
+                <img src={`https://estilo-guau2-bak.vercel.app/images/${compra.primera_foto}`} className="h-24 w-24 rounded-full mb-4 mx-auto" alt="Producto" />
                 <h3 className="font-bold flex items-center justify-center text-2xl">{compra.nombre_producto}</h3>
                 <p  className='font-semibold'>Precio: <span className="font-normal">${compra.precio}</span> </p>
                 <p className="font-bold">Talla: <span className="font-normal"> {compra.talla} </span></p>
@@ -74,7 +74,7 @@ const ProductoUser = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 shadow-lg w-1/2">
             <h2 className="text-2xl font-bold mb-4">{selectedProduct?.producto}</h2>
-            <img src={`http://localhost:3001/images/${selectedProduct?.primera_foto}`} alt={selectedProduct?.producto} className="w-auto flex justify-center items-center h-48 object-cover mb-4" />
+            <img src={`https://estilo-guau2-bak.vercel.app/images/${selectedProduct?.primera_foto}`} alt={selectedProduct?.producto} className="w-auto flex justify-center items-center h-48 object-cover mb-4" />
             <p className="text-lg "><strong>Descripción:</strong> {selectedProduct?.descripcion}</p>
             <p className="text-lg"><strong>Precio:</strong> ${selectedProduct?.precio}</p>
             <p className="text-lg"><strong>Talla:</strong> {selectedProduct?.talla}</p>

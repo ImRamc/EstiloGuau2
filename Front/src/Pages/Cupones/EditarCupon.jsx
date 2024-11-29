@@ -20,7 +20,7 @@ const EditarCupon = () => {
     useEffect(() => {
       const obtenerCupon = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/cupones/${id}`);
+          const response = await axios.get(`https://estilo-guau2-bak.vercel.app/cupones/${id}`);
           setCupon({
             ...response.data,
             status: response.data.status === 1 ? 1 : 0 // Asegúrate de que status sea un número
@@ -44,7 +44,7 @@ const EditarCupon = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const response = await axios.put(`http://localhost:3001/cupones/${id}`, cupon);
+        const response = await axios.put(`https://estilo-guau2-bak.vercel.app/cupones/${id}`, cupon);
         if (response.status === 200) {
           setMessage('Cupón actualizado exitosamente.');
           setTimeout(() => navigate('/cupones'), 2000);

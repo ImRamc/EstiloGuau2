@@ -8,19 +8,19 @@ import Sidebar from '../../Components/Sidebar/Sidebar';
 
 
 const EditarUsuario = () => {
-  const { id } = useParams(); // Extraer el ID del producto desde la URL
+  const { id } = useParams();
   const [roles, setRoles] = useState([]);
-  const [message, setMessage] = useState(''); // Estado para mensajes de éxito/error
-  const [currentImage, setCurrentImage] = useState([]); // Estado para almacenar la URL de la imagen actual
+  const [message, setMessage] = useState('');
+  const [currentImage, setCurrentImage] = useState([]);
   const [agregado, setAgregado] = useState(false);
-  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+  const navigate = useNavigate();
 
   useEffect(() => {
     
     
     const obtenerRoles = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/all-rol');
+        const response = await axios.get('https://estilo-guau2-bak.vercel.app/all-rol');
         setRoles(response.data);
         //console.log(response.data)
       } catch (error) {
@@ -30,7 +30,7 @@ const EditarUsuario = () => {
     obtenerRoles();
     const obtenerUsuario = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/usuarioget/${id}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/usuarioget/${id}`);
         setUsuario(response.data);
         const fotos = response.data.foto.split(',');
         //console.log(fotos)
@@ -79,8 +79,8 @@ const EditarUsuario = () => {
 
   const handleRemoveImage = async () => {
     try {
-      await axios.delete(`http://localhost:3001/productos/${id}/foto`);
-      setUsuario({ ...usuario, foto: '' }); // Actualizar el estado localmente después de eliminar la imagen
+      await axios.delete(`https://estilo-guau2-bak.vercel.app/productos/${id}/foto`);
+      setUsuario({ ...usuario, foto: '' });
       setMessage('Imagen eliminada exitosamente.');
     } catch (error) {
       console.error(`Error al eliminar la imagen del producto con ID ${id}:`, error);
@@ -97,7 +97,7 @@ const EditarUsuario = () => {
     });
 
     try {
-      await axios.put(`http://localhost:3001/usuarioupdate/${id}`, formData, {
+      await axios.put(`https://estilo-guau2-bak.vercel.app/usuarioupdate/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

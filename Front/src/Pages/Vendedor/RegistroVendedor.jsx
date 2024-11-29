@@ -14,10 +14,10 @@ const RegistroVendedor = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nom_empresa: '',
-    direccion: location || 'Dirección no disponible',  // Valor predeterminado
+    direccion: location || 'Dirección no disponible',
     telefono: '',
-    pais: country || 'País no disponible',           // Valor predeterminado
-    estado: city || 'Estado no disponible',           // Valor predeterminado
+    pais: country || 'País no disponible',
+    estado: city || 'Estado no disponible',
     codigo_postal: CodigoPostal || 'No disponible',
     rfc: '',
   });
@@ -25,10 +25,7 @@ const RegistroVendedor = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
 
-
-
   useEffect(() => {
-    // Obtener la ubicación del usuario cuando el componente se monta
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -48,7 +45,7 @@ const RegistroVendedor = () => {
   useEffect(() => {
     const verificarEmpresa = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/empresa/verificar/${userData.idUsuario}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/empresa/verificar/${userData.idUsuario}`);
         if (response.data.existe) {
           alert(`Ya tienes una empresa asociada: ${response.data.vendedor.nom_empresa}`);
           navigate('/perfil-vendedor');
@@ -92,7 +89,7 @@ const RegistroVendedor = () => {
       const idRol = userData.idRol; // Si el rol se debe obtener del contexto, asegúrate que sea el correcto
 
       // Registrar vendedor
-      await axios.post('http://localhost:3001/registro-vendedor', {
+      await axios.post('https://estilo-guau2-bak.vercel.app/registro-vendedor', {
         ...formData,
         latitud,
         longitud,

@@ -38,11 +38,11 @@ const FormularioCupon = () => {
     // Asegurarse de que idUsuario está presente en el estado antes de enviar
     const cuponData = {
       ...cupon,
-      idUsuario: userData.idUsuario  // Incluyendo idUsuario en los datos a enviar
+      idUsuario: userData.idUsuario
     };
 
     try {
-      const response = await axios.post('http://localhost:3001/cupones-nuevo', cuponData);
+      const response = await axios.post('https://estilo-guau2-bak.vercel.app/cupones-nuevo', cuponData);
       if (response.status === 201) {
         setAgregado(true);
         setTimeout(() => {

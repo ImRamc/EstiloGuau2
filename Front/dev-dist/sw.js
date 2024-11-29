@@ -67,7 +67,7 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-324d6ae8'], (function (workbox) { 'use strict';
+define(['./workbox-f89b30ee'], (function (workbox) { 'use strict';
 
   workbox.enable();
   self.skipWaiting();
@@ -81,8 +81,15 @@ define(['./workbox-324d6ae8'], (function (workbox) { 'use strict';
   workbox.precacheAndRoute([{
     "url": "registerSW.js",
     "revision": "3ca0b8505b4bec776b69afdba2768812"
+  }, {
+    "url": "index.html",
+    "revision": "0.lf5i78lmigo"
   }], {});
   workbox.cleanupOutdatedCaches();
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
+    allowlist: [/^\/$/],
+    denylist: [/^\/Suscripciones/, /^\/Uscupones/, /^\/Login/, /^\/Registro/]
+  }));
   workbox.registerRoute(/^http:\/\/localhost:4173\/?$/, new workbox.NetworkFirst({
     "cacheName": "landing-page-cache",
     plugins: [new workbox.ExpirationPlugin({

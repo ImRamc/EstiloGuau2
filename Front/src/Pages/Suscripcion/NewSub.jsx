@@ -44,12 +44,12 @@ const FormularioSuscripcion = () => {
 
     const nuevaSuscripcion = {
       ...suscripcion,
-      //beneficios: JSON.stringify(beneficiosArray) // Convertir a JSON
-      beneficios: beneficiosArray // Mantener como array
+      //beneficios: JSON.stringify(beneficiosArray)
+      beneficios: beneficiosArray
     };
 
     try {
-      const response = await axios.post('http://localhost:3001/suscripcion', nuevaSuscripcion);
+      const response = await axios.post('https://estilo-guau2-bak.vercel.app/suscripcion', nuevaSuscripcion);
       if (response.status === 201) {
         setAgregado(true);
         setTimeout(() => {

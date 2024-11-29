@@ -16,7 +16,7 @@ const PerfilVendedor = () => {
   useEffect(() => {
     const fetchVendedor = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/vendedor/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/vendedor/${userData.idUsuario}`);
         //console.log(response.data);
         setVendedor(response.data);
       } catch (error) {
@@ -25,7 +25,7 @@ const PerfilVendedor = () => {
     };
     const fetchTotalCompras = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/total-compras/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/total-compras/${userData.idUsuario}`);
         //console.log(response.data); // Muestra la respuesta para depurar
         setTotalCompras(response.data[0].total_compras); // Asigna el total de compras al estado
       } catch (error) {
@@ -34,7 +34,7 @@ const PerfilVendedor = () => {
     };
     const fetchSuscripcionName = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/suscripcionname/${userData.idUsuario}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/suscripcionname/${userData.idUsuario}`);
         //console.log(response.data); // Muestra la respuesta para depurar
         if (response.data.length > 0) {
           setNombreSuscripcion(response.data[0].nombre_sub); // Asigna el nombre de la suscripción al estado
@@ -47,7 +47,7 @@ const PerfilVendedor = () => {
     };
     const fetchTotalClientes = async () => {
       try {
-        const response = await Axios.get(`http://localhost:3001/total-clientes/${userData.idVendedor}`);
+        const response = await Axios.get(`https://estilo-guau2-bak.vercel.app/total-clientes/${userData.idVendedor}`);
        // console.log(response.data); // Muestra la respuesta para depurar
         setTotalClientes(response.data[0].total_clientes); // Asigna el total de clientes al estado
       } catch (error) {

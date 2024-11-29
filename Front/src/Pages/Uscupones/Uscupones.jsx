@@ -16,7 +16,7 @@ export function Uscupones() {
   useEffect(() => {
     const fetchCupones = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/cuponesvigentes/${idUsuario}`);
+        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/cuponesvigentes/${idUsuario}`);
         if (Array.isArray(response.data)) {
           setCupones(response.data);
         } else {
@@ -56,7 +56,7 @@ export function Uscupones() {
   // Función para aplicar el cupón y obtener productos
   const handleAplicarCupon = async (idVendedor) => {
     try {
-      const response = await axios.get(`http://localhost:3001/aplicar-cupon/${idVendedor}`); // Usamos idUsuario directamente
+      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/aplicar-cupon/${idVendedor}`); // Usamos idUsuario directamente
       if (Array.isArray(response.data)) {
         setProductos(response.data);
       } else {

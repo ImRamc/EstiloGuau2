@@ -19,9 +19,9 @@ const Compras = () => {
             try {
                 let url;
                 if (idRol === 2) {
-                    url = `http://localhost:3001/comprasxus/${idUsuario}`;
+                    url = `https://estilo-guau2-bak.vercel.app/comprasxus/${idUsuario}`;
                 } else if (idRol === 3) {
-                    url = `http://localhost:3001/compras`;
+                    url = `https://estilo-guau2-bak.vercel.app/compras`;
                 }
 
                 const response = await fetch(url);
@@ -42,7 +42,7 @@ const Compras = () => {
     useEffect(() => {
         const fetchClientesRecientes = async () => {
             try {
-                const response = await fetch('http://localhost:3001/clientes-recientes');
+                const response = await fetch('https://estilo-guau2-bak.vercel.app/clientes-recientes');
                 if (!response.ok) {
                     throw new Error('No se pudieron obtener los clientes recientes');
                 }
@@ -87,7 +87,7 @@ const Compras = () => {
                               <tr key={compra.idCompra}>
                                   <td className="py-1 px-2 border border-gray-400">{compra.idCompra}</td>
                                   <td className="flex items-center py-1 px-2 border border-gray-300">
-                                      <img src={`http://localhost:3001/images/${compra.primera_foto}`} alt="" className="h-20 p-3" />
+                                      <img src={`https://estilo-guau2-bak.vercel.app/images/${compra.primera_foto}`} alt="" className="h-20 p-3" />
                                       <div className="flex flex-col">
                                           <span>{compra.descripcion_producto}</span>
                                           <span className="font-light">Talla: {compra.nombre_talla}</span>

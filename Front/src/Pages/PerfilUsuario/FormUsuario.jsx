@@ -24,7 +24,7 @@ export const FormUsuario = () => {
     useEffect(() => {
         const obtenerUsuario = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/usuarioget/${userData.idUsuario}`);
+                const response = await axios.get(`https://estilo-guau2-bak.vercel.app/usuarioget/${userData.idUsuario}`);
                 setUsuario(response.data);
                 setCurrentImage(response.data.foto);
             } catch (error) {
@@ -45,7 +45,7 @@ export const FormUsuario = () => {
     
     const handleRemoveImage = async () => {
         try {
-            await axios.delete(`http://localhost:3001/usuarioget/${userData.idUsuario}/foto`);
+            await axios.delete(`https://estilo-guau2-bak.vercel.app/usuarioget/${userData.idUsuario}/foto`);
             setUsuario({ ...usuario, foto: '' });
             setMessage('Imagen eliminada exitosamente.');
         } catch (error) {
@@ -62,7 +62,7 @@ export const FormUsuario = () => {
         });
     
         try {
-            await axios.put(`http://localhost:3001/usuarioupdate/${userData.idUsuario}`, formData, {
+            await axios.put(`https://estilo-guau2-bak.vercel.app/usuarioupdate/${userData.idUsuario}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -158,7 +158,7 @@ export const FormUsuario = () => {
                             <div className="flex flex-col mb-4">
                                 {currentImage && (
                                     <div className="flex flex-col justify-center items-center mb-4 text-center">
-                                        <img src={`http://localhost:3001/images/${currentImage}`} alt="" className="rounded-full h-96 w-96 object-cover" />
+                                        <img src={`https://estilo-guau2-bak.vercel.app/images/${currentImage}`} alt="" className="rounded-full h-96 w-96 object-cover" />
                                         <button type="button" onClick={handleRemoveImage} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline m-4">
                                             Quitar foto
                                         </button>

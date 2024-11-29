@@ -59,7 +59,7 @@ export default defineConfig({
           },
         ],
         // Eliminar fallback para offline.html
-        navigateFallback: undefined, // Ya no usamos una página de fallback
+        navigateFallback: 'index.html', // Ya no usamos una página de fallback
         navigateFallbackDenylist: [
           /^\/Suscripciones/,
           /^\/Uscupones/,
