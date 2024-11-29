@@ -21,7 +21,7 @@ const Suscripcion = () => {
 
   const obtenerSuscripciones = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/suscripciones');
+      const response = await axios.get('https://estiloguau-back.vercel.app');
       setSuscripciones(response.data);
     } catch (error) {
       console.error('Error al obtener las suscripciones:', error);
