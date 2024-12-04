@@ -36,7 +36,7 @@ function urlBase64ToUint8Array(base64String) {
           applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
         });
 
-        await fetch("http://localhost:3001/subscribe", {
+        await fetch("https://estilo-guau2-bak.vercel.app/subscribe", {
           method: "POST",
           body: JSON.stringify(subscription),
           headers: { "Content-Type": "application/json" },

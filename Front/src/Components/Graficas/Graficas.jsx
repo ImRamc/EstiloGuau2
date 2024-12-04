@@ -60,10 +60,10 @@ const Graficas = () => {
         let response;
         if (userData.idRol === 2) {
           // Si el rol es 2, obtenemos las ventas mensuales para un vendedor específico
-          response = await axios.get(`http://localhost:3001/ventas/mensuales/${userData.idVendedor}`);
+          response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/mensuales/${userData.idVendedor}`);
         } else if (userData.idRol === 3) {
           // Si el rol es 3, obtenemos las ventas mensuales generales
-          response = await axios.get(`http://localhost:3001/ventas/mensuales`);
+          response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/mensuales`);
         } else {
           console.warn('Rol no válido para obtener ventas mensuales.');
           return; // O maneja el caso de rol no válido según tus necesidades
@@ -82,10 +82,10 @@ const Graficas = () => {
         let response;
         if (userData.idRol === 2) {
           // Si el rol es 3, obtenemos las ventas semanales para un vendedor específico
-          response = await axios.get(`http://localhost:3001/ventas/semana/${userData.idVendedor}`);
+          response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/semana/${userData.idVendedor}`);
         } else if (userData.idRol === 3) {
           // Si el rol es 2, obtenemos las ventas semanales generales
-          response = await axios.get(`http://localhost:3001/ventas/semana`);
+          response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/semana`);
         } else {
           console.warn('Rol no válido para obtener ventas semanales.');
           return; // Maneja el caso de rol no válido según tus necesidades
@@ -104,10 +104,10 @@ const Graficas = () => {
           let response;
           if (userData.idRol === 3) {
             // Si el rol es 3, obtenemos las ventas diarias generales
-            response = await axios.get(`http://localhost:3001/ventas/dia`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/dia`);
           } else if (userData.idRol === 2) {
             // Si el rol es 2, obtenemos las ventas diarias para un vendedor específico
-            response = await axios.get(`http://localhost:3001/ventas/dia/${userData.idVendedor}`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/ventas/dia/${userData.idVendedor}`);
           } else {
             console.warn('Rol no válido para obtener ventas diarias.');
             return; // O maneja el caso de rol no válido según tus necesidades
@@ -146,11 +146,11 @@ const Graficas = () => {
           let response;
           if (userData.idRol === 3) {
             // Si el rol es 3, obtenemos los productos más vendidos sin especificar vendedor
-            response = await axios.get(`http://localhost:3001/mas-vendidos`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/mas-vendidos`);
             console.log('Datos recibidos:', response.data); // Verifica los datos recibidos desde la API
           } else if (userData.idRol === 2) {
             // Si el rol es 2, obtenemos los productos más vendidos para un vendedor específico
-            response = await axios.get(`http://localhost:3001/mas-vendidos/${userData.idVendedor}`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/mas-vendidos/${userData.idVendedor}`);
             //console.log('Datos recibidos:', response.data); // Verifica los datos recibidos desde la API
           } else {
             console.warn('Rol no válido para obtener productos más vendidos.');
@@ -199,10 +199,10 @@ const Graficas = () => {
       
           if (userData.idRol === 2) {
             // Si el rol es 2, obtenemos las ganancias mensuales para un vendedor específico
-            response = await axios.get(`http://localhost:3001/ganancias/mensuales/${userData.idVendedor}`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/ganancias/mensuales/${userData.idVendedor}`);
           } else if (userData.idRol === 3) {
             // Si el rol es 3, obtenemos las ganancias mensuales generales
-            response = await axios.get(`http://localhost:3001/ganancias/mensuales`);
+            response = await axios.get(`https://estilo-guau2-bak.vercel.app/ganancias/mensuales`);
           } else {
             console.warn('Rol no válido para obtener ganancias mensuales.');
             return; // Maneja el caso de rol no válido según tus necesidades
@@ -283,7 +283,7 @@ const Graficas = () => {
         <div className="mt-4">
         {productosMasVendidos.map((producto, index) => (
           <div key={index} className="flex flex-row  mb-4">
-            <img src={`http://localhost:3001/images/${producto.primera_foto}`}
+            <img src={`https://estilo-guau2-bak.vercel.app/images/${producto.primera_foto}`}
                       alt="" className=" h-32 p-3" />
             <p className=" flex flex-col text-lg font-bold mt-2">{producto.nombre_producto}
             <span className='text-lg font-light mt-2'> {producto.descripcion}</span>

@@ -15,7 +15,7 @@ const ModalCupones = ({ isOpen, toggleModal }) => {
 
      try {
       
-      const response = await axios.get(`http://localhost:3001/apply-cupon/${cupon}/${userData.idUsuario}`);
+      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/apply-cupon/${cupon}/${userData.idUsuario}`);
       console.log(response);
       if (response.data !=null && response.data.Usado == 0 ) {
         let porcentaje = response.data.porcentaje;

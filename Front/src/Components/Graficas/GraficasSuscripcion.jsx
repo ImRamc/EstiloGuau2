@@ -39,7 +39,7 @@ const GraficasSuscripcion = () => {
   // Fetch total suscripciones
   const fetchTotalSuscripciones = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/suscripciones');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/suscripciones');
       const data = await response.json();
       setTotalSuscripciones(data.total_suscripciones || 0);
     } catch (error) {
@@ -50,7 +50,7 @@ const GraficasSuscripcion = () => {
   // Fetch total empresas
   const fetchTotalEmpresas = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/suscripciones/total-empresas');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/suscripciones/total-empresas');
       const data = await response.json();
       setTotalEmpresas(data.total_empresas);  // Asegúrate de que esta línea actualiza el estado correctamente
     } catch (error) {
@@ -61,7 +61,7 @@ const GraficasSuscripcion = () => {
   // Fetch suscripciones por mes
   const fetchSuscripcionesPorMes = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/suscripciones/por-mes');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/suscripciones/por-mes');
       const data = await response.json();
 
       const labels = data.map(item => item.mes);
@@ -84,7 +84,7 @@ const GraficasSuscripcion = () => {
 
   const fetchSuscripcionesPorTipo = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/suscripciones/empresas-por-tipo');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/suscripciones/empresas-por-tipo');
       
       // Verifica si la respuesta es exitosa
       if (!response.ok) {

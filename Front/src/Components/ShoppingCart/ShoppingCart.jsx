@@ -37,7 +37,7 @@ export default function ShoppingCart({ isOpen, setIsOpen }) {
               <div className="flex flex-col">
                 <div key={producto.idProducto + producto.talla} className="flex items-center justify-between p-4 bg-custom rounded-lg">
                   <img
-  src={`http://localhost:3001/images/${producto?.foto?.split(",")[0] || "placeholder.jpg"}`} // Muestra la primera imagen o una de respaldo
+  src={`https://estilo-guau2-bak.vercel.app/images/${producto?.foto?.split(",")[0] || "placeholder.jpg"}`} // Muestra la primera imagen o una de respaldo
   alt={producto?.nombre || "Producto"} // Agrega un alt descriptivo
   className="w-20 h-20 object-cover rounded-full"
 />

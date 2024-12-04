@@ -40,7 +40,7 @@ const GraficasCupon = () => {
   // Función para obtener los cupones y las estadísticas
   const fetchCupones = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/cupones');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/cupones');
       const data = await response.json();
   
       // Verifica si los datos contienen la propiedad "status"
@@ -64,7 +64,7 @@ const GraficasCupon = () => {
 
   const fetchCuponesUsados = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/cupones/estadisticas');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/cupones/estadisticas');
       const data = await response.json();
       setCuponesUsados(data.length); // Suponiendo que 'data' contiene cupones usados
     } catch (error) {
@@ -74,7 +74,7 @@ const GraficasCupon = () => {
 
   const fetchCuponesPorMes = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/dashboard/cupones');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/dashboard/cupones');
       const data = await response.json();
   
       const labels = [...new Set(data.map(item => `${item.mes}-${item.anio}`))]; // Uniques mes-año
@@ -109,7 +109,7 @@ const GraficasCupon = () => {
   
   const fetchCuponesPorVendedor = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/dashboard/cupones-vendedor');
+      const response = await fetch('https://estilo-guau2-bak.vercel.app/api/dashboard/cupones-vendedor');
       const data = await response.json();
   
       const labels = data.map(item => item.vendedor);
