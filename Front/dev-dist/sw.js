@@ -82,22 +82,22 @@ define(['./workbox-f89b30ee'], (function (workbox) { 'use strict';
     "url": "registerSW.js",
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
-    "url": "index.html",
-    "revision": "0.lf5i78lmigo"
+    "url": "/index.html",
+    "revision": "0.erbpmr8h9so"
   }], {});
   workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("/index.html"), {
     allowlist: [/^\/$/],
     denylist: [/^\/Suscripciones/, /^\/Uscupones/, /^\/Login/, /^\/Registro/]
   }));
-  workbox.registerRoute(/^http:\/\/localhost:4173\/?$/, new workbox.NetworkFirst({
+  workbox.registerRoute(/^\/?$/, new workbox.NetworkFirst({
     "cacheName": "landing-page-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 1,
       maxAgeSeconds: 2592000
     })]
   }), 'GET');
-  workbox.registerRoute(/^http:\/\/localhost:4173\/Tienda$/, new workbox.NetworkFirst({
+  workbox.registerRoute(/^\/Tienda$/, new workbox.NetworkFirst({
     "cacheName": "tienda-page-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 1,
@@ -111,8 +111,8 @@ define(['./workbox-f89b30ee'], (function (workbox) { 'use strict';
       maxAgeSeconds: 2592000
     })]
   }), 'GET');
-  workbox.registerRoute(/^(?!.*(\/Suscripciones|\/Uscupones|\/Login|\/Registro)).*$/, new workbox.NetworkFirst({
-    "cacheName": "valid-pages-cache",
+  workbox.registerRoute(/^\/(?!Suscripciones|Uscupones|Login|Registro).*$/, new workbox.NetworkFirst({
+    "cacheName": "general-pages-cache",
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 50,
       maxAgeSeconds: 2592000
