@@ -62,7 +62,7 @@ const PaymentFormSub = ({ total, carrito }) => {
   };
 
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
-    const apiUrl = "https://estilo-guau2-bak.vercel.app/api/process-payment";
+    const apiUrl = "http://localhost:3001/api/process-payment";
     console.log("esto es el token antes de mandarlo al back", tokenId)
     const paymentData = {
       token_id: tokenId, // Token de Openpay

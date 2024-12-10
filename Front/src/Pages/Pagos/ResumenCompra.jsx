@@ -51,7 +51,7 @@ const ResumenCompra = () => {
   useEffect(() => {
     const obtenerProducto = async () => {
       try {
-        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/productos/${idProducto}`);
+        const response = await axios.get(`http://localhost:3001/productos/${idProducto}`);
         const producto = response.data;
         if (producto.porcentaje_descuento !== 0) {
           const descuento = (producto.precio * producto.porcentaje_descuento) / 100;

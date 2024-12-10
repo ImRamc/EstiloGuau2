@@ -45,7 +45,7 @@ const RegistroVendedor = () => {
   useEffect(() => {
     const verificarEmpresa = async () => {
       try {
-        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/empresa/verificar/${userData.idUsuario}`);
+        const response = await axios.get(`http://localhost:3001/empresa/verificar/${userData.idUsuario}`);
         if (response.data.existe) {
           alert(`Ya tienes una empresa asociada: ${response.data.vendedor.nom_empresa}`);
           navigate('/perfil-vendedor');
@@ -89,7 +89,7 @@ const RegistroVendedor = () => {
       const idRol = userData.idRol; // Si el rol se debe obtener del contexto, asegúrate que sea el correcto
 
       // Registrar vendedor
-      await axios.post('https://estilo-guau2-bak.vercel.app/registro-vendedor', {
+      await axios.post('http://localhost:3001/registro-vendedor', {
         ...formData,
         latitud,
         longitud,

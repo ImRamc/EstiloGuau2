@@ -39,7 +39,7 @@ const PaymentForm = ({ total, carrito }) => {
       for (const item of carrito) {
         console.log("Esto es el producto que se está procesando:", item);
         const precioProducto = (item.cantidad * item.precioSeleccionado)
-        const response = await axios.post('https://estilo-guau2-bak.vercel.app/nueva-compra', {
+        const response = await axios.post('http://localhost:3001/nueva-compra', {
           idUsuario: userData.idUsuario,
           idProducto: item.idProducto,
           cantidad_producto: item.cantidad,
@@ -75,7 +75,7 @@ const PaymentForm = ({ total, carrito }) => {
   };
 
   const sendPaymentToServer = (tokenId, deviceSessionId) => {
-    const apiUrl = "https://estilo-guau2-bak.vercel.app/api/process-payment";
+    const apiUrl = "http://localhost:3001/api/process-payment";
     console.log("esto es el token antes de mandarlo al back", tokenId)
 
     const paymentData = {

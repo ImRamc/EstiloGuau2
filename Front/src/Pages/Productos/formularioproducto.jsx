@@ -44,7 +44,7 @@ const FormularioProducto = () => {
 
   const obtenerOfertas = async () => {
     try {
-      const response = await axios.get('https://estilo-guau2-bak.vercel.app/all-ofertas');
+      const response = await axios.get('http://localhost:3001/all-ofertas');
       setOfertas(response.data);
     } catch (error) {
       console.error('Error al obtener las ofertas:', error);
@@ -53,7 +53,7 @@ const FormularioProducto = () => {
 
   const obtenerTemporadas = async () => {
     try {
-      const response = await axios.get('https://estilo-guau2-bak.vercel.app/temporada');
+      const response = await axios.get('http://localhost:3001/temporada');
       setTemporadas(response.data);
     } catch (error) {
       console.error('Error al obtener las temporadas:', error);
@@ -62,7 +62,7 @@ const FormularioProducto = () => {
 
   const obtenerTallas = async () => {
     try {
-      const response = await axios.get('https://estilo-guau2-bak.vercel.app/tallas');
+      const response = await axios.get('http://localhost:3001/tallas');
       setTallas(response.data);
     } catch (error) {
       console.error('Error al obtener las tallas:', error);
@@ -138,7 +138,7 @@ const FormularioProducto = () => {
         formData.append('ofertas[]', fila.idOferta);
       });
 
-      const response = await axios.post('https://estilo-guau2-bak.vercel.app/producto-nuevo', formData, {
+      const response = await axios.post('http://localhost:3001/producto-nuevo', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

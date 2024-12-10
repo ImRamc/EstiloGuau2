@@ -42,7 +42,7 @@ const FormularioCupon = () => {
     };
 
     try {
-      const response = await axios.post('https://estilo-guau2-bak.vercel.app/cupones-nuevo', cuponData);
+      const response = await axios.post('http://localhost:3001/cupones-nuevo', cuponData);
       if (response.status === 201) {
         setAgregado(true);
         setTimeout(() => {

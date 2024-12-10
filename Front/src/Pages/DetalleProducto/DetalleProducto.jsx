@@ -58,7 +58,7 @@ const DetalleProducto = () => {
 
     const obtenerProducto = async () => {
       try {
-        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/productos/${idProducto}`);
+        const response = await axios.get(`http://localhost:3001/productos/${idProducto}`);
         const producto = response.data;
         console.log(response.data);
         setProducto(producto);
@@ -76,7 +76,7 @@ const DetalleProducto = () => {
 
   const obtenerTallas = async () => {
     try {
-      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/tallasxidproducto/${idProducto}`);
+      const response = await axios.get(`http://localhost:3001/tallasxidproducto/${idProducto}`);
       console.log("hgfdscfghfdsgh", response.data)
       setTallas(response.data); // Guarda las tallas en el estado
       setCargando(false);
@@ -93,7 +93,7 @@ const DetalleProducto = () => {
 
   const fetchComentarios = async () => {
     try {
-      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/comentarios/${idProducto}`);
+      const response = await axios.get(`http://localhost:3001/comentarios/${idProducto}`);
       setComentarios(response.data);
     } catch (error) {
       console.error('Error al obtener comentarios:', error);
@@ -103,7 +103,7 @@ const DetalleProducto = () => {
   const fetchProductosPrecios = async () => {
     
     try {      
-      const response = await axios.get(`https://estilo-guau2-bak.vercel.app/productosprecios/${idProducto}/${idTalla}`);
+      const response = await axios.get(`http://localhost:3001/productosprecios/${idProducto}/${idTalla}`);
       console.log("dentro");
       console.log(response.data)
       setProductosPrecios(response.data.precio); // Actualiza el estado con los precios
@@ -169,7 +169,7 @@ const DetalleProducto = () => {
     }
 
     try {
-      const response = await axios.post('https://estilo-guau2-bak.vercel.app/comentarios', {
+      const response = await axios.post('http://localhost:3001/comentarios', {
         idUsuario,
         idProducto,
         comentario,
@@ -227,7 +227,7 @@ const DetalleProducto = () => {
             {fotos.map((foto, index) => (
               <img
                 key={index}
-                src={`https://estilo-guau2-bak.vercel.app/images/${foto}`}
+                src={`http://localhost:3001/images/${foto}`}
                 alt={`Product ${index + 1}`}
                 className="w-32 h-auto m-2 cursor-pointer"
                 onClick={() => handleImageClick(foto)}
@@ -236,7 +236,7 @@ const DetalleProducto = () => {
           </div>
           <div className="ml-20">
             <img
-              src={`https://estilo-guau2-bak.vercel.app/images/${selectedImage}`}
+              src={`http://localhost:3001/images/${selectedImage}`}
               alt="Selected"
               className="w-auto h-96 rounded"
             />

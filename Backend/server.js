@@ -26,17 +26,17 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: ["https://estilo-guau2.vercel.app/", "http://localhost:5173"] }));
-/* app.use(cors({ origin: "http://localhost:5173" })); esto es del original*/
+/* app.use(cors({ origin: "http://localhost:5173" })); */
 
 let connection;
 
 // Conexión a la base de datos
-async function initializeDBConnection() {
-  const host = process.env.DB_HOST || 'localhost';  // Si no está en .env, por defecto será localhost
-  const user = process.env.DB_USER || 'root';  // Usuario de la base de datos
-  const password = process.env.DB_PASSWORD || '';  // Contraseña de la base de datos
-  const database = process.env.DB_NAME || 'bdestiloguau';  // Nombre de la base de datos
-  const port = process.env.DB_PORT || 3306;  // Puerto (por defecto 3306 para MySQL)
+/* async function initializeDBConnection() {
+  const host = 'localhost';  // Si no está en .env, por defecto será localhost
+  const user =  'root';  // Usuario de la base de datos
+  const password = '';  // Contraseña de la base de datos
+  const database = 'bdestiloguau';  // Nombre de la base de datos
+  const port = 3306;  // Puerto (por defecto 3306 para MySQL)
 
   try {
     connection = await mysql.createConnection({
@@ -48,7 +48,7 @@ async function initializeDBConnection() {
     process.exit(1); // Termina el proceso si no se puede conectar a la base de datos
   }
 }
-
+ */
 // Llama la función de conexión y luego inicia el servidor
 initializeDBConnection().then(() => {
   app.listen(port, () => {
@@ -57,12 +57,12 @@ initializeDBConnection().then(() => {
 });
 
 // original:
-/* async function initializeDBConnection() {
+async function initializeDBConnection() {
   try {
     connection = await mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '12345',
+      password: '',
       database: 'bdestiloguau'
     });
     console.log('Conexión a la base de datos establecida');
@@ -72,7 +72,7 @@ initializeDBConnection().then(() => {
   }
 }
 initializeDBConnection();
- */
+
 
 
 // Configuración de Multer
@@ -2526,12 +2526,12 @@ console.log("productos-filtrar", req.body)
 
 
 
-/*
+
 //original:
- app.listen(3001, () => {
+/*  app.listen(3001, () => {
   console.log(`Server is running on port: ${port}`);
-});
- */
+}); */
+
 
 // Exporta la aplicación para Vercel
 module.exports = (req, res) => {

@@ -34,7 +34,7 @@ const FormularioSub = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://estilo-guau2-bak.vercel.app/cupones-nuevo', cupon);
+      const response = await axios.post('http://localhost:3001/cupones-nuevo', cupon);
       if (response.status === 201) {
         setAgregado(true);
         setTimeout(() => {

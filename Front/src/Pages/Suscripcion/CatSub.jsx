@@ -14,7 +14,7 @@ const FormSub = () => {
 
   const obtenerSuscripciones = async () => {
     try {
-      const response = await axios.get('https://estilo-guau2-bak.vercel.app/suscripciones');
+      const response = await axios.get('http://localhost:3001/suscripciones');
       setSuscripciones(response.data);
     } catch (error) {
       console.error('Error al obtener las suscripciones:', error);
@@ -23,7 +23,7 @@ const FormSub = () => {
 
   const eliminarSuscripcion = async (id_sub) => {
     try {
-      await axios.delete(`https://estilo-guau2-bak.vercel.app/suscripcion/${id_sub}`);
+      await axios.delete(`http://localhost:3001/suscripcion/${id_sub}`);
       setSuscripciones(suscripciones.filter(suscripcion => suscripcion.id_sub !== id_sub));
     } catch (error) {
       console.error(`Error al eliminar la suscripción con ID ${id_sub}:`, error);

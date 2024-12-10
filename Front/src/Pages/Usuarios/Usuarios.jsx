@@ -16,7 +16,7 @@ const Usuarios = () => {
 
   const obtenerUsuarios = async () => {
     try {
-      const response = await axios.get('https://estilo-guau2-bak.vercel.app/usuariosget');
+      const response = await axios.get('http://localhost:3001/usuariosget');
       setUsuarios(response.data);
       //console.log(productos)
     } catch (error) {
@@ -26,7 +26,7 @@ const Usuarios = () => {
 
   const eliminarUsuario = async (idUsuario) => {
     try {
-      await axios.delete(`https://estilo-guau2-bak.vercel.app/usuariodelete/${idUsuario}`);
+      await axios.delete(`http://localhost:3001/usuariodelete/${idUsuario}`);
       setUsuarios(usuarios.filter(usuario => usuario.idUsuario !== idUsuario));
     } catch (error) {
       console.error(`Error al eliminar el usuario con ID ${idUsuario}:`, error);
@@ -73,7 +73,7 @@ const Usuarios = () => {
                   <td className="py-2 px-2 text-center border border-gray-300">
                     {usuario.foto && (
                       <img 
-                      src={`https://estilo-guau2-bak.vercel.app/images/${usuario.foto.split(',')[0]}`}  // Muestra solo el primer archivo
+                      src={`http://localhost:3001/images/${usuario.foto.split(',')[0]}`}  // Muestra solo el primer archivo
                       alt="Producto" 
                       className="w-20 h-20 object-cover rounded mx-auto" />
                     )}

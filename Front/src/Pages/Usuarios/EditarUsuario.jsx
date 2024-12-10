@@ -20,7 +20,7 @@ const EditarUsuario = () => {
     
     const obtenerRoles = async () => {
       try {
-        const response = await axios.get('https://estilo-guau2-bak.vercel.app/all-rol');
+        const response = await axios.get('http://localhost:3001/all-rol');
         setRoles(response.data);
         //console.log(response.data)
       } catch (error) {
@@ -30,7 +30,7 @@ const EditarUsuario = () => {
     obtenerRoles();
     const obtenerUsuario = async () => {
       try {
-        const response = await axios.get(`https://estilo-guau2-bak.vercel.app/usuarioget/${id}`);
+        const response = await axios.get(`http://localhost:3001/usuarioget/${id}`);
         setUsuario(response.data);
         const fotos = response.data.foto.split(',');
         //console.log(fotos)
@@ -79,7 +79,7 @@ const EditarUsuario = () => {
 
   const handleRemoveImage = async () => {
     try {
-      await axios.delete(`https://estilo-guau2-bak.vercel.app/productos/${id}/foto`);
+      await axios.delete(`http://localhost:3001/productos/${id}/foto`);
       setUsuario({ ...usuario, foto: '' });
       setMessage('Imagen eliminada exitosamente.');
     } catch (error) {
@@ -97,7 +97,7 @@ const EditarUsuario = () => {
     });
 
     try {
-      await axios.put(`https://estilo-guau2-bak.vercel.app/usuarioupdate/${id}`, formData, {
+      await axios.put(`http://localhost:3001/usuarioupdate/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
